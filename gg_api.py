@@ -1,6 +1,9 @@
 '''Version 0.5'''
 
 # Year of the Golden Globes ceremony being analyzed
+from collections import defaultdict
+
+
 YEAR = "2013"
 
 # Global variable for hardcoded award names
@@ -31,6 +34,7 @@ def get_hosts(year):
         - The function should return a list even if there's only one host
     '''
     # Your code here
+    hosts = []
     return hosts
 
 def get_awards(year):
@@ -50,6 +54,7 @@ def get_awards(year):
         - The only hardcoded part allowed is the word "Best"
     '''
     # Your code here
+    awards = []
     return awards
 
 def get_nominees(year):
@@ -84,6 +89,7 @@ def get_nominees(year):
         - Each value should be a list of strings, even if there's only one nominee
     '''
     # Your code here
+    nominees = defaultdict(list)
     return nominees
 
 def get_winner(year):
@@ -107,6 +113,7 @@ def get_winner(year):
         - Each value should be a single string (the winner's name)
     '''
     # Your code here
+    winners = defaultdict(str)
     return winners
 
 def get_presenters(year):
@@ -130,6 +137,7 @@ def get_presenters(year):
         - Each value should be a list of strings, even if there's only one presenter
     '''
     # Your code here
+    presenters = defaultdict(list)
     return presenters
 
 def pre_ceremony():
