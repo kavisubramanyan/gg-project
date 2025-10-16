@@ -15,6 +15,35 @@ nlp = spacy.load("en_core_web_sm")
 with open("sample_text.json", "r", encoding="utf-8") as f:
     tweet_data = json.load(f)
 
+AWARD_NAMES = [
+    "best screenplay - motion picture",
+    "best director - motion picture",
+    "best performance by an actress in a television series - comedy or musical",
+    "best foreign language film",
+    "best performance by an actor in a supporting role in a motion picture",
+    "best performance by an actress in a supporting role in a series, mini-series or motion picture made for television",
+    "best motion picture - comedy or musical",
+    "best performance by an actress in a motion picture - comedy or musical",
+    "best mini-series or motion picture made for television",
+    "best original score - motion picture",
+    "best performance by an actress in a television series - drama",
+    "best performance by an actress in a motion picture - drama",
+    "cecil b. demille award",
+    "best performance by an actor in a motion picture - comedy or musical",
+    "best motion picture - drama",
+    "best performance by an actor in a supporting role in a series, mini-series or motion picture made for television",
+    "best performance by an actress in a supporting role in a motion picture",
+    "best television series - drama",
+    "best performance by an actor in a mini-series or motion picture made for television",
+    "best performance by an actress in a mini-series or motion picture made for television",
+    "best animated feature film",
+    "best original song - motion picture",
+    "best performance by an actor in a motion picture - drama",
+    "best television series - comedy or musical",
+    "best performance by an actor in a television series - drama",
+    "best performance by an actor in a television series - comedy or musical"
+]
+
 
 ##### get the list of tweets, tweet_id, and timestamps
 tweets = []
@@ -24,11 +53,7 @@ timestamp = []
 for t in tweet_data:
     tweets.append(t.get("text"))
     tweet_id.append(t.get("id"))
-    timestamp.append(datetime.datetime.fromtimestamp(t.get("timestamp_ms")/1000))
-
-#### fixing time stamp
-# raw_time = example["timestamp_ms"]
-# dt = datetime.datetime.fromtimestamp(raw_time/1000.0)
+    timestamp.append(t.get("timestamp_ms"))
 
 
 def hashtags_usernames(tweet):
@@ -86,29 +111,109 @@ def clean_tweets(tweet):
     return tweet
 
 
-##### this is the plain text 
+########### this is the cleaned tweet text 
 cleaned_tweets = []
 for tweet in tweets:
     cleaned_tweets.append(clean_tweets(tweet))
 
 
-# looking at the clean text
-print(cleaned_tweets)
+###### looking at the clean text
+# print(cleaned_tweets)
 
 ##### now we can use nlp for specific functions
 def extract_people(tweet):
     doc = nlp(tweet)
-    # we look at nlp entities to get all the people defined
-    people = [ent.text for ent in doc.ents if ent.label_ == "PERSON"]
-    
-    # some of the people have possesive "'s" so we can remove that now
-    people = [re.sub(r"'s$", "", name) for name in people]
-    # return a list of people in the tweet
-    return people
+    people = []
+
+    for ent in doc.ents:
+        if ent.label_ == "PERSON":
+            # removes weird spacing
+            name = ent.text.strip()
+            # Filters to remove false positives
+            if (# helps remove shorter names 
+                len(name) > 2     
+                # helps remove anything that is in all caps                             
+                and not name.isupper()     
+                # we can remove words we see arent names                  
+                and not any(word.lower() in ["rt", "fab", "golden", "miu"] for word in name.split())):
+                people.append(name)
+
+    # take off the colon
+    people = [re.sub(r"'s$", "", p) for p in people]
+
+    return people 
+
 
 ##### helps test the extract_people works:
-for clean_tweet in cleaned_tweets:
-    people = extract_people(clean_tweet)
-    if people:
-        print(people)
+# for clean_tweet in cleaned_tweets:
+#     people = extract_people(clean_tweet)
+#     if people:
+#         print(people)
+
+
+##### gets award names in each tweet
+def extract_award_names(awards, tweet):
+    instances_of_awards = []
+    text = nlp(tweet.lower())
+    tokens = {token.lemma_ for token in text if not token.is_stop}
+    
+    for award in awards:
+        # fixes the dashes - might need
+        award_lower = award.replace("–", "-").replace("—", "-")
+        award_txt = nlp(award_lower)
+        award_words = [
+            word.lemma_ for word in award_txt 
+            if word.is_alpha and word.text not in {"by", "an", "in", "a", "the", "of"}
+        ]
+        # check how many words from the award are found in the tweet
+        matching = sum(1 for w in award_words if w in tokens)
+
+        # helps shorter awards still match
+        if matching >= 3 or (len(award_words) <= 5 and matching >= 2):
+            instances_of_awards.append(award)
+    return instances_of_awards
+
+# ##### helps test the extract_award_names works:
+# for clean_tweet in cleaned_tweets:
+#     awards = extract_award_names(AWARD_NAMES, clean_tweet)
+#     print(awards)
+
+
+
+##### gets buzzwords in each tweet
+BUZZWORDS = BUZZWORDS = ["win", "winner", "won", "nominee", "nominated", "award", "awards", "performance", "role", "actor", "actress", "director",
+    "film", "movie", "show", "series", "screenplay", "amazing", "deserved", "snubbed", "robbed", "proud",
+    "stunning", "brilliant", "incredible", "iconic", "powerful", "speech", "redcarpet", "dress", "host", "presenter",
+    "stage", "moment", "applause", "crowd", "look", "congrats", "celebrate", "party", "cheers"]
+
+
+def extract_buzzwords (buzzwords, tweet):
+    found_buzzwords = []
+    for word in tweet.lower().split():
+        if word in BUZZWORDS:
+            found_buzzwords.append(word)
+    
+    return found_buzzwords
+
+# for clean_tweet in cleaned_tweets:
+#     buzz = extract_buzzwords(BUZZWORDS, clean_tweet)
+#     print(buzz)
+
+
+####### class of each tweet
+class Tweet:
+    def __init__(self, cleaned_tweet, tweet_id, timestamp):
+        self.text = cleaned_tweet
+        self.tweet_id = tweet_id
+        self.timestamp = timestamp
+
+        # extracted info
+        self.people = extract_people(cleaned_tweet)
+        self.awards = extract_award_names(AWARD_NAMES, cleaned_tweet)
+        self.buzzwords = extract_buzzwords(BUZZWORDS, cleaned_tweet)
+        self.hashtags = re.findall(r"#(\w+)", cleaned_tweet)
+
+
+
+
 
