@@ -13,7 +13,7 @@ nlp = spacy.load("en_core_web_sm")
 
 ##### get the data 
 with open("sample_text.json", "r", encoding="utf-8") as f:
-    tweet_data = json.load(f)
+    raw_tweet_data = json.load(f)
 
 AWARD_NAMES = [
     "best screenplay - motion picture",
@@ -50,7 +50,7 @@ tweets = []
 tweet_id = []
 timestamp = []
 
-for t in tweet_data:
+for t in raw_tweet_data:
     tweets.append(t.get("text"))
     tweet_id.append(t.get("id"))
     timestamp.append(t.get("timestamp_ms"))
@@ -101,12 +101,12 @@ def clean_tweets(tweet):
     # code to keep tabs/newline characters
     tweet = re.sub(' +', ' ', tweet)
 
-    # ensure in english
-    try:
-        if detect(tweet) != "en":
-            return ""
-    except:
-        return ""
+    # # ensure in english - moved to extract people
+    # try:
+    #     if detect(tweet) != "en":
+    #         return ""
+    # except:
+    #     return ""
 
     return tweet
 
@@ -122,6 +122,13 @@ for tweet in tweets:
 
 ##### now we can use nlp for specific functions
 def extract_people(tweet):
+    # # ensure in english
+    try:
+        if detect(tweet) != "en":
+            return []
+    except:
+        pass
+    
     doc = nlp(tweet)
     people = []
 
@@ -152,12 +159,12 @@ def extract_people(tweet):
 
 
 ##### gets award names in each tweet
-def extract_award_names(awards, tweet):
+def extract_award_names(tweet):
     instances_of_awards = []
     text = nlp(tweet.lower())
     tokens = {token.lemma_ for token in text if not token.is_stop}
     
-    for award in awards:
+    for award in AWARD_NAMES:
         # fixes the dashes - might need
         award_lower = award.replace("–", "-").replace("—", "-")
         award_txt = nlp(award_lower)
@@ -181,18 +188,19 @@ def extract_award_names(awards, tweet):
 
 
 ##### gets buzzwords in each tweet
-BUZZWORDS = BUZZWORDS = ["win", "winner", "won", "nominee", "nominated", "award", "awards", "performance", "role", "actor", "actress", "director",
+BUZZWORDS = ["win", "winner", "won", "nominee", "nominated", "award", "awards", "best" "performance", "role", "actor", "actress", "director",
     "film", "movie", "show", "series", "screenplay", "amazing", "deserved", "snubbed", "robbed", "proud",
     "stunning", "brilliant", "incredible", "iconic", "powerful", "speech", "redcarpet", "dress", "host", "presenter",
     "stage", "moment", "applause", "crowd", "look", "congrats", "celebrate", "party", "cheers"]
 
 
-def extract_buzzwords (buzzwords, tweet):
+def extract_buzzwords (tweet):
     found_buzzwords = []
-    for word in tweet.lower().split():
+    # gets clean words
+    words = re.findall(r'\b\w+\b', tweet.lower()) 
+    for word in words:
         if word in BUZZWORDS:
             found_buzzwords.append(word)
-    
     return found_buzzwords
 
 # for clean_tweet in cleaned_tweets:
@@ -202,18 +210,33 @@ def extract_buzzwords (buzzwords, tweet):
 
 ####### class of each tweet
 class Tweet:
-    def __init__(self, cleaned_tweet, tweet_id, timestamp):
+    def __init__(self, tweets, cleaned_tweet, tweet_id, timestamp):
         self.text = cleaned_tweet
         self.tweet_id = tweet_id
         self.timestamp = timestamp
 
         # extracted info
         self.people = extract_people(cleaned_tweet)
-        self.awards = extract_award_names(AWARD_NAMES, cleaned_tweet)
-        self.buzzwords = extract_buzzwords(BUZZWORDS, cleaned_tweet)
-        self.hashtags = re.findall(r"#(\w+)", cleaned_tweet)
+        self.awards = extract_award_names(cleaned_tweet)
+        self.buzzwords = extract_buzzwords(cleaned_tweet)
+        self.hashtags = re.findall(r"#(\w+)", tweets)
+
+tweet_objects = []
+for i in range(len(tweets)):
+    raw = tweets[i]
+    cleaned = cleaned_tweets[i]
+    tw = Tweet(raw, cleaned, tweet_id[i], timestamp[i])
+    tweet_objects.append(tw)
 
 
 
-
+for t in tweet_objects:
+    print("=" * 60)
+    print(f"Tweet ID: {t.tweet_id}")
+    print(f"Timestamp: {t.timestamp}")
+    print(f"Text: {t.text}")
+    print(f"People: {t.people if t.people else 'None'}")
+    print(f"Awards: {t.awards if t.awards else 'None'}")
+    print(f"Buzzwords: {t.buzzwords if t.buzzwords else 'None'}")
+    print(f"Hashtags: {t.hashtags if t.hashtags else 'None'}")
 
