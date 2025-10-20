@@ -55,3 +55,5 @@ def get_tickets(tweet_data):
 
     print("Generated tickets:", tickets)
     return tickets
+
+get_tickets(tweet_data)
