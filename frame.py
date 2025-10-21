@@ -67,8 +67,12 @@ def find_best_award(window_text, max_distance=MAX_LEVENSHTEIN_DISTANCE):
                 best_distance = dist
                 best_match = award
     
-    # Return the best match if it's within tolerance AND candidate is at least 10 chars
-    if best_distance <= max_distance and len(" ".join(words[:2])) >= 10:
+    # Penalize "Best Song" matches - require tighter distance
+    if best_match == "Best Song Motion Picture" and best_distance > 5:
+        return None
+    
+    # Return the best match if it's within tolerance AND candidate is at least 8 chars
+    if best_distance <= max_distance and len(" ".join(words[:2])) >= 8:
         return best_match
     return None
 
@@ -80,7 +84,7 @@ def extract_category_and_nomination(name, text):
     lower_text = text.lower()
     winner_kw = re.compile(r"\b(won|wins|is the winner|takes|takes home|goes to|receives|awarded)\b", re.IGNORECASE)
     nominee_kw = re.compile(r"\b(nominated|nominee|up for|shortlisted)\b", re.IGNORECASE)
-    presenter_kw = re.compile(r"\b(presents|presenting|hosted|host)\b", re.IGNORECASE)
+    presenter_kw = re.compile(r"\b(presents|presenting|hosted|host|hosts)\b", re.IGNORECASE)
 
     try:
         name_re = re.compile(r"\b" + re.escape(name.lower()) + r"\b")
@@ -104,12 +108,12 @@ def extract_category_and_nomination(name, text):
             return "winner", nomination
         if nominee_kw.search(window_lower) and nomination:
             return "nominee", nomination
-        if presenter_kw.search(window_lower) and nomination:
+        if presenter_kw.search(window_lower):
             return "presenter", nomination
 
-        # Default to nominee if we found a nomination
+        # Default to winner if we found a nomination (since most tweets announce winners)
         if nomination:
-            return "nominee", nomination
+            return "winner", nomination
 
     return None, None
 
