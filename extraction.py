@@ -12,7 +12,7 @@ import datetime
 nlp = spacy.load("en_core_web_sm")
 
 ##### get the data 
-with open("sample_text.json", "r", encoding="utf-8") as f:
+with open("gg2013.json", "r", encoding="utf-8") as f:
     tweet_data = json.load(f)
 
 
@@ -77,11 +77,11 @@ def clean_tweets(tweet):
     tweet = re.sub(' +', ' ', tweet)
 
     # ensure in english
-    try:
-        if detect(tweet) != "en":
-            return ""
-    except:
-        return ""
+    # try:
+    #     if detect(tweet) != "en":
+    #         return ""
+    # except:
+    #     return ""
 
     return tweet
 
@@ -93,7 +93,7 @@ for tweet in tweets:
 
 
 # looking at the clean text
-print(cleaned_tweets)
+# print(cleaned_tweets)
 
 ##### now we can use nlp for specific functions
 def extract_people(tweet):
@@ -107,7 +107,7 @@ def extract_people(tweet):
     return people
 
 ##### helps test the extract_people works:
-for clean_tweet in cleaned_tweets:
-    people = extract_people(clean_tweet)
-    if people:
-        print(people)
+# for clean_tweet in cleaned_tweets:
+#     people = extract_people(clean_tweet)
+#     if people:
+#         print(people)
