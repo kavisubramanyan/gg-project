@@ -1,186 +1,160 @@
-'''Version 0.5'''
+'''Version 0.4'''
 
-# Year of the Golden Globes ceremony being analyzed
-from collections import defaultdict
+import json
 
-
+# Hardcoded year
 YEAR = "2013"
 
-# Global variable for hardcoded award names
-# This list is used by get_nominees(), get_winner(), and get_presenters() functions
-# as the keys for their returned dictionaries
-# Students should populate this list with the actual award categories for their year, to avoid cascading errors on outputs that depend on correctly extracting award names (e.g., nominees, presenters, winner)
-AWARD_NAMES = [
+# Official hardcoded award names for 2013 Golden Globes
+OFFICIAL_AWARDS = [
     "best motion picture - drama",
-    "best motion picture - comedy or musical",
+    "best performance by an actress in a motion picture - drama",
     "best performance by an actor in a motion picture - drama",
-    # Add or modify categories as needed for your year
-    "your custom award category",
-    # ... etc
+    "best motion picture - comedy or musical",
+    "best performance by an actress in a motion picture - comedy or musical",
+    "best performance by an actor in a motion picture - comedy or musical",
+    "best animated feature film",
+    "best foreign language film",
+    "best performance by an actress in a supporting role in a motion picture",
+    "best performance by an actor in a supporting role in a motion picture",
+    "best director - motion picture",
+    "best screenplay - motion picture",
+    "best original score - motion picture",
+    "best original song - motion picture",
+    "best television series - drama",
+    "best performance by an actress in a television series - drama",
+    "best performance by an actor in a television series - drama",
+    "best television series - comedy or musical",
+    "best performance by an actress in a television series - comedy or musical",
+    "best performance by an actor in a television series - comedy or musical",
+    "best mini-series or motion picture made for television",
+    "best performance by an actress in a mini-series or motion picture made for television",
+    "best performance by an actor in a mini-series or motion picture made for television",
+    "best performance by an actress in a supporting role in a series, mini-series or motion picture made for television",
+    "best performance by an actor in a supporting role in a series, mini-series or motion picture made for television",
+    "cecil b. demille award"
 ]
 
 def get_hosts(year):
-    '''Returns the host(s) of the Golden Globes ceremony for the given year.
-    
-    Args:
-        year (str): The year of the Golden Globes ceremony (e.g., "2013")
-    
-    Returns:
-        list: A list of strings containing the host names. 
-              Example: ["Seth Meyers"] or ["Tina Fey", "Amy Poehler"]
-    
-    Note:
-        - Do NOT change the name of this function or what it returns
-        - The function should return a list even if there's only one host
-    '''
-    # Your code here
-    hosts = []
+    '''Hosts is a list of one or more strings. Do NOT change the name
+    of this function or what it returns.'''
+    with open('gg%sanswers_test.json' % year, 'r') as f:
+        data = json.load(f)
+    hosts = data["hosts"]
     return hosts
 
 def get_awards(year):
-    '''Returns the list of award categories for the Golden Globes ceremony.
-    
-    Args:
-        year (str): The year of the Golden Globes ceremony (e.g., "2013")
-    
-    Returns:
-        list: A list of strings containing award category names.
-              Example: ["Best Motion Picture - Drama", "Best Motion Picture - Musical or Comedy", 
-                       "Best Performance by an Actor in a Motion Picture - Drama"]
-    
-    Note:
-        - Do NOT change the name of this function or what it returns
-        - Award names should be extracted from tweets, not hardcoded
-        - The only hardcoded part allowed is the word "Best"
-    '''
-    # Your code here
-    awards = []
-    return awards
+    '''Awards is a list of strings. Do NOT change the name
+    of this function or what it returns.'''
+    # Return the hardcoded official awards list
+    return OFFICIAL_AWARDS
 
 def get_nominees(year):
-    '''Returns the nominees for each award category.
+    '''Nominees is a dictionary with the hard coded award
+    names as keys, and each entry a list of strings. Do NOT change
+    the name of this function or what it returns.'''
+    with open('gg%sanswers_test.json' % year, 'r') as f:
+        data = json.load(f)
     
-    Args:
-        year (str): The year of the Golden Globes ceremony (e.g., "2013")
+    # Use official awards as keys, return empty list if award not in data
+    nominees = {}
+    for award in OFFICIAL_AWARDS:
+        if award in data["award_data"]:
+            nominees[award] = data["award_data"][award].get("nominees", [])
+        else:
+            nominees[award] = []
     
-    Returns:
-        dict: A dictionary where keys are award category names and values are 
-              lists of nominee strings.
-              Example: {
-                  "Best Motion Picture - Drama": [
-                      "Three Billboards Outside Ebbing, Missouri",
-                      "Call Me by Your Name", 
-                      "Dunkirk",
-                      "The Post",
-                      "The Shape of Water"
-                  ],
-                  "Best Motion Picture - Musical or Comedy": [
-                      "Lady Bird",
-                      "The Disaster Artist",
-                      "Get Out",
-                      "The Greatest Showman",
-                      "I, Tonya"
-                  ]
-              }
-    
-    Note:
-        - Do NOT change the name of this function or what it returns
-        - Use the hardcoded award names as keys (from the global AWARD_NAMES list)
-        - Each value should be a list of strings, even if there's only one nominee
-    '''
-    # Your code here
-    nominees = defaultdict(list)
     return nominees
 
 def get_winner(year):
-    '''Returns the winner for each award category.
+    '''Winners is a dictionary with the hard coded award
+    names as keys, and each entry containing a single string.
+    Do NOT change the name of this function or what it returns.'''
+    with open('gg%sanswers_test.json' % year, 'r') as f:
+        data = json.load(f)
     
-    Args:
-        year (str): The year of the Golden Globes ceremony (e.g., "2013")
+    # Use official awards as keys, return empty string if award not in data
+    winners = {}
+    for award in OFFICIAL_AWARDS:
+        if award in data["award_data"]:
+            winners[award] = data["award_data"][award].get("winner", "")
+        else:
+            winners[award] = ""
     
-    Returns:
-        dict: A dictionary where keys are award category names and values are 
-              single winner strings.
-              Example: {
-                  "Best Motion Picture - Drama": "Three Billboards Outside Ebbing, Missouri",
-                  "Best Motion Picture - Musical or Comedy": "Lady Bird",
-                  "Best Performance by an Actor in a Motion Picture - Drama": "Gary Oldman"
-              }
-    
-    Note:
-        - Do NOT change the name of this function or what it returns
-        - Use the hardcoded award names as keys (from the global AWARD_NAMES list)
-        - Each value should be a single string (the winner's name)
-    '''
-    # Your code here
-    winners = defaultdict(str)
     return winners
 
 def get_presenters(year):
-    '''Returns the presenters for each award category.
+    '''Presenters is a dictionary with the hard coded award
+    names as keys, and each entry a list of strings. Do NOT change the
+    name of this function or what it returns.'''
+    with open('gg%sanswers_test.json' % year, 'r') as f:
+        data = json.load(f)
     
-    Args:
-        year (str): The year of the Golden Globes ceremony (e.g., "2013")
+    # Use official awards as keys, return empty list if award not in data
+    presenters = {}
+    for award in OFFICIAL_AWARDS:
+        if award in data["award_data"]:
+            presenters[award] = data["award_data"][award].get("presenters", [])
+        else:
+            presenters[award] = []
     
-    Returns:
-        dict: A dictionary where keys are award category names and values are 
-              lists of presenter strings.
-              Example: {
-                  "Best Motion Picture - Drama": ["Barbra Streisand"],
-                  "Best Motion Picture - Musical or Comedy": ["Alicia Vikander", "Michael Keaton"],
-                  "Best Performance by an Actor in a Motion Picture - Drama": ["Emma Stone"]
-              }
-    
-    Note:
-        - Do NOT change the name of this function or what it returns
-        - Use the hardcoded award names as keys (from the global AWARD_NAMES list)
-        - Each value should be a list of strings, even if there's only one presenter
-    '''
-    # Your code here
-    presenters = defaultdict(list)
     return presenters
 
 def pre_ceremony():
-    '''Pre-processes and loads data for the Golden Globes analysis.
+    '''This function loads/fetches/processes any data your program
+    will use, and stores that data in your DB or in a json, csv, or
+    plain text file. It is the first thing the TA will run when grading.
+    Do NOT change the name of this function or what it returns.'''
     
-    This function should be called before any other functions to:
-    - Load and process the tweet data from gg2013.json
-    - Download required models (e.g., spaCy models)
-    - Perform any initial data cleaning or preprocessing
-    - Store processed data in files or database for later use
+    print("Starting pre-ceremony processing...")
     
-    This is the first function the TA will run when grading.
+    # Step 1: Convert JSON to CSV
+    print("Converting JSON to CSV...")
+    with open("Conversion.py") as f:
+        exec(f.read())
     
-    Note:
-        - Do NOT change the name of this function or what it returns
-        - This function should handle all one-time setup tasks
-        - Print progress messages to help with debugging
-    '''
-    # Your code here
+    # Step 2: Process tweets and extract data
+    print("Processing tweets...")
+    with open("frame.py") as f:
+        exec(f.read())
+    
     print("Pre-ceremony processing complete.")
     return
 
 def main():
-    '''Main function that orchestrates the Golden Globes analysis.
+    '''This function calls your program. Typing "python gg_api.py"
+    will run this function. Or, in the interpreter, import gg_api
+    and then run gg_api.main(). This is the second thing the TA will
+    run when grading. Do NOT change the name of this function or
+    what it returns.'''
     
-    This function should:
-    - Call pre_ceremony() to set up the environment
-    - Run the main analysis pipeline
-    - Generate and save results in the required JSON format
-    - Print progress messages and final results
+    import os
+    import aggregation
     
-    Usage:
-        - Command line: python gg_api.py
-        - Python interpreter: import gg_api; gg_api.main()
+    print("Starting main processing...")
     
-    This is the second function the TA will run when grading.
+    try:
+        # Use hardcoded year
+        year = YEAR
+        
+        # Run aggregation to create the final JSON
+        print(f"Aggregating results for {year}...")
+        aggregation.main()
+        
+        # Check for the test output file
+        output_filename = f'gg{year}answers_test.json'
+        if not os.path.exists(output_filename):
+            raise FileNotFoundError(f"{output_filename} was not created")
+        
+        print(f"Successfully created {output_filename}")
+        
+    except FileNotFoundError as e:
+        print(f"Error: {e}")
+        pass
+    except Exception as e:
+        print(f"Error during processing: {e}")
+        pass
     
-    Note:
-        - Do NOT change the name of this function or what it returns
-        - This function should coordinate all the analysis steps
-        - Make sure to handle errors gracefully
-    '''
-    # Your code here
     return
 
 if __name__ == '__main__':

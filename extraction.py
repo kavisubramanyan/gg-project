@@ -103,8 +103,72 @@ def extract_people(tweet):
     
     # some of the people have possesive "'s" so we can remove that now
     people = [re.sub(r"'s$", "", name) for name in people]
+    
+    # Filter out invalid names
+    filtered_people = []
+    for name in people:
+        name_clean = name.strip()
+        
+        # Skip if empty
+        if not name_clean:
+            continue
+        
+        # Skip if contains "golden globes" or "goldenglobes"
+        if re.search(r'\b(golden\s*globes?|goldenglobes?)\b', name_clean, re.IGNORECASE):
+            continue
+        
+        # Skip if contains "RT" (retweet indicator)
+        if re.search(r'\bRT\b', name_clean):
+            continue
+        
+        # Skip if it's just "Best" or starts with "Best "
+        if re.match(r'^Best(\s|$)', name_clean, re.IGNORECASE):
+            continue
+        
+        # Skip common non-person words that spaCy sometimes catches
+        non_person_terms = [
+            'tonight', 'congrats', 'congratulations', 'twitter', 'facebook',
+            'instagram', 'youtube', 'tv', 'television', 'movie', 'film',
+            'show', 'award', 'awards', 'winner', 'host', 'actor', 'actress',
+            'drama', 'comedy', 'musical', 'series', 'picture', 'screenplay',
+            'director', 'performance', 'song', 'score', 'animated', 'foreign'
+        ]
+        if name_clean.lower() in non_person_terms:
+            continue
+        
+        # Skip if it's all caps and longer than 4 chars (likely acronym/hashtag)
+        if len(name_clean) > 4 and name_clean.isupper():
+            continue
+        
+        # Skip single word names that are less than 3 characters (likely noise)
+        if len(name_clean.split()) == 1 and len(name_clean) < 3:
+            continue
+        
+        # Skip if contains numbers
+        if re.search(r'\d', name_clean):
+            continue
+        
+        # Skip if contains common URL/social media patterns
+        if re.search(r'(\.com|\.net|\.org|www\.|http)', name_clean, re.IGNORECASE):
+            continue
+        
+        # Keep names that have at least 2 characters and look like proper names
+        # Most real names are at least 2 chars and contain letters
+        if len(name_clean) >= 2 and re.search(r'[a-zA-Z]', name_clean):
+            # Additional check: if it's a multi-word name, ensure each part is capitalized properly
+            words = name_clean.split()
+            if len(words) > 1:
+                # For multi-word names, check that they look like proper names
+                # (start with capital letter)
+                if all(w[0].isupper() for w in words if len(w) > 0):
+                    filtered_people.append(name_clean)
+            else:
+                # For single-word names, be more liberal but check capitalization
+                if name_clean[0].isupper():
+                    filtered_people.append(name_clean)
+    
     # return a list of people in the tweet
-    return people
+    return filtered_people
 
 ##### helps test the extract_people works:
 # for clean_tweet in cleaned_tweets:

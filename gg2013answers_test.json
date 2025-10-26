@@ -1,0 +1,183 @@
+{
+    "hosts": [
+        "amy poehler",
+        "tina fey"
+    ],
+    "award_data": {
+        "best original score - motion picture": {
+            "nominees": [
+                "mychael danna",
+                "b.j. novak",
+                "mychael",
+                "cloud atlas",
+                "john williams",
+                "jennifer lawrence",
+                "jennifer",
+                "jennifer lawrence silver linings",
+                "wowza jennifer lawrence"
+            ],
+            "presenters": [],
+            "winner": "mychael danna"
+        },
+        "best performance by an actress in a motion picture - drama": {
+            "nominees": [
+                "golden",
+                "jennifer lawrence golden",
+                "comedy jennifer lawrence golden",
+                "jennifer lawrence",
+                "jennifer"
+            ],
+            "presenters": [],
+            "winner": "golden"
+        },
+        "best motion picture - drama": {
+            "nominees": [
+                "damian lewis",
+                "sorry bryan cranston",
+                "damien lewis",
+                "jon hamm",
+                "drama golden",
+                "damian lewis wins best actor",
+                "motion picture drama golden",
+                "daniel day-lewis",
+                "quinten ledge golden",
+                "les mis"
+            ],
+            "presenters": [
+                "clinton"
+            ],
+            "winner": "damian lewis"
+        },
+        "best performance by an actor in a supporting role in a motion picture": {
+            "nominees": [
+                "bradley cooper",
+                "christoph waltz",
+                "django unchained",
+                "christoph waltz golden",
+                "django unchained golden",
+                "christoph",
+                "django",
+                "mike",
+                "golden",
+                "leo",
+                "djangounchained golden",
+                "christoph waltz wins",
+                "righthandman golden",
+                "ed harris",
+                "winner ed harris",
+                "kate hudson"
+            ],
+            "presenters": [],
+            "winner": "bradley cooper"
+        },
+        "best television series - drama": {
+            "nominees": [
+                "juliane moore",
+                "jessica lange",
+                "drama damian lewis",
+                "damian lewis",
+                "congrats damien lewis best",
+                "damien lewis",
+                "hurrah",
+                "drama golden",
+                "jcio",
+                "lewis",
+                "jeff daniels",
+                "yaaaay",
+                "woooot wooot"
+            ],
+            "presenters": [],
+            "winner": "juliane moore"
+        },
+        "best performance by an actor in a mini-series or motion picture made for television": {
+            "nominees": [
+                "kevin costner"
+            ],
+            "presenters": [],
+            "winner": "kevin costner"
+        },
+        "best performance by an actress in a motion picture - comedy or musical": {
+            "nominees": [
+                "comedy jennifer lawrence"
+            ],
+            "presenters": [],
+            "winner": "comedy jennifer lawrence"
+        },
+        "best performance by an actress in a supporting role in a motion picture": {
+            "nominees": [
+                "michael cinco",
+                "miniseries",
+                "maggie smith",
+                "tina",
+                "amy",
+                "miniseries golden",
+                "jennifer lawrence",
+                "anne hathaway golden",
+                "les miserables",
+                "les mis golden",
+                "anne hathaway",
+                "sally field",
+                "hooray",
+                "anne",
+                "les",
+                "sofia vergara",
+                "selena gomez"
+            ],
+            "presenters": [],
+            "winner": "michael cinco"
+        },
+        "best performance by an actor in a supporting role in a series, mini-series or motion picture made for television": {
+            "nominees": [
+                "eric stonestreet",
+                "ed harris",
+                "ed harris golden",
+                "schmidt"
+            ],
+            "presenters": [],
+            "winner": "eric stonestreet"
+        },
+        "best performance by an actor in a television series - drama": {
+            "nominees": [
+                "steve",
+                "damian lewis",
+                "damien lewis golden",
+                "ancalerts golden"
+            ],
+            "presenters": [],
+            "winner": "steve"
+        },
+        "best performance by an actress in a supporting role in a series, mini-series or motion picture made for television": {
+            "nominees": [
+                "maggie smith golden",
+                "maggie smith",
+                "downton abbey"
+            ],
+            "presenters": [],
+            "winner": "maggie smith golden"
+        },
+        "best director - motion picture": {
+            "nominees": [
+                "speilberg",
+                "ben aflleck",
+                "globes eredcarpet",
+                "pee",
+                "danny strong",
+                "mtv",
+                "ben affleck",
+                "ben",
+                "golden",
+                "ridiculous golden"
+            ],
+            "presenters": [],
+            "winner": "speilberg"
+        },
+        "best motion picture - comedy or musical": {
+            "nominees": [
+                "les mis",
+                "comedy golden"
+            ],
+            "presenters": [],
+            "winner": "les mis"
+        }
+    }
+}
