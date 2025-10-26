@@ -6,8 +6,8 @@ from collections import Counter
 
 #HYPERPARAMETERS
 MAX_LEVENSHTEIN_DISTANCE = 10  # Tighter tolerance for better accuracy
-WINDOW_SIZE = 80  # Larger window to catch more context
-trainsize = 80000
+WINDOW_SIZE = 100  # Larger window to catch more context
+trainsize = len(tweet_data)
 
 print("Number of tweets:", len(tweet_data))
 
@@ -80,7 +80,7 @@ def find_best_award(window_text, max_distance=MAX_LEVENSHTEIN_DISTANCE):
         return None
     
     # Try windows of different sizes (optimize range)
-    for end in range(3, min(12, len(words)+1)):
+    for end in range(3, min(15, len(words)+1)):
         candidate = " ".join(words[:end])
         candidate_lower = candidate.lower()
         
@@ -126,6 +126,7 @@ def extract_category_and_nomination(name, text):
     """
     Return (category, nomination) for a given person and tweet text.
     Enhanced with better keyword detection and context awareness.
+    PRIORITY ORDER: host > presenter > winner > nominee
     """
     lower_text = text.lower()
     
@@ -143,9 +144,18 @@ def extract_category_and_nomination(name, text):
         re.IGNORECASE
     )
     
+    # CRITICAL: Presenter keywords - removed "award" to avoid false positives
+    # Key patterns: "X presents", "X and Y present", "presented by X"
     presenter_kw = re.compile(
-        r"\b(presents|presented|presenting|presenter|presenters|"
-        r"introduce|introduced|introducing|handed out|gave|giving)\b", 
+        r"\b(present|presents|presented|presenting|presenter|presenters|"
+        r"introduce|introduces|introduced|introducing|handed out|hands out|"
+        r"gave out|gives out|giving out)\b", 
+        re.IGNORECASE
+    )
+    
+    # Additional strong presenter patterns
+    present_nominees_pattern = re.compile(
+        r"present(?:s|ed|ing)?\s+(?:the\s+)?(?:nominees|award)", 
         re.IGNORECASE
     )
     
@@ -172,55 +182,96 @@ def extract_category_and_nomination(name, text):
         window_lower = lower_text[win_start:win_end]
         window_orig = text[win_start:win_end]
 
+        # Check for host keywords FIRST (special case, no award needed)
+        if host_kw.search(window_lower):
+            return "host", None
+
         # Find any phrase starting with 'Best' (case insensitive) within this window
-        best_matches = re.finditer(r"[Bb]est [A-Za-z0-9 &'()-]{2,80}", window_orig)
+        best_matches = list(re.finditer(r"[Bb]est [A-Za-z0-9 &'()-]{2,80}", window_orig))
         
-        for best_match in best_matches:
-            nomination = find_best_award(best_match.group(0))
+        # Also look for Cecil B. DeMille
+        cecil_matches = list(re.finditer(r"[Cc]ecil [Bb]\.\s*[Dd]e[Mm]ille", window_orig))
+        
+        all_award_matches = best_matches + cecil_matches
+        
+        for award_match in all_award_matches:
+            if award_match in cecil_matches:
+                nomination = "Cecil B DeMille Award for Lifetime Achievement in Motion Pictures"
+            else:
+                nomination = find_best_award(award_match.group(0))
             
             if not nomination:
                 continue
             
             # Calculate confidence score based on keyword proximity to name
             name_pos = start - win_start
-            confidence = 0
+            award_pos = award_match.start() - win_start
             
-            # Check for host keywords first (special case)
-            if host_kw.search(window_lower):
-                return "host", None
+            # Check PRESENTER keywords with HIGHEST priority
+            # Key insight: presenters come BEFORE the award name
+            # Pattern: "Name present(s) the award" or "Name and Name present the nominees for Award"
+            presenter_matches = list(presenter_kw.finditer(window_lower))
+            present_nominees_matches = list(present_nominees_pattern.finditer(window_lower))
             
-            # Check winner keywords
+            if presenter_matches or present_nominees_matches:
+                all_presenter_indicators = presenter_matches + present_nominees_matches
+                
+                for pmatch in all_presenter_indicators:
+                    presenter_word_pos = pmatch.start()
+                    
+                    # Check if pattern is: Name ... present ... Award
+                    # Name should come before "present", and "present" should come before award
+                    if name_pos < presenter_word_pos < award_pos:
+                        # This is the classic presenter pattern
+                        distance_name_to_present = presenter_word_pos - name_pos
+                        distance_present_to_award = award_pos - pmatch.end()
+                        
+                        # Close proximity check
+                        if distance_name_to_present < 50 and distance_present_to_award < 50:
+                            confidence = 20  # Very high confidence
+                            
+                            # Bonus for "present the nominees" pattern
+                            if pmatch in present_nominees_matches:
+                                confidence += 5
+                            
+                            if confidence > highest_confidence:
+                                highest_confidence = confidence
+                                best_category = "presenter"
+                                best_nomination = nomination
+                    
+                    # Also check reverse pattern: "Award presented by Name"
+                    elif award_pos < presenter_word_pos < name_pos:
+                        distance_award_to_present = presenter_word_pos - award_pos
+                        distance_present_to_name = name_pos - pmatch.end()
+                        
+                        if distance_award_to_present < 50 and distance_present_to_name < 30:
+                            confidence = 18
+                            if confidence > highest_confidence:
+                                highest_confidence = confidence
+                                best_category = "presenter"
+                                best_nomination = nomination
+            
+            # Check winner keywords (lower priority than presenter)
             winner_matches = list(winner_kw.finditer(window_lower))
-            if winner_matches:
-                # Find closest winner keyword to name
+            if winner_matches and highest_confidence < 15:  # Only if no strong presenter signal
+                # Winners usually have keyword AFTER name or very close
                 min_dist = min(abs(match.start() - name_pos) for match in winner_matches)
-                if min_dist < 50:  # Close to name
-                    confidence = 10 - (min_dist / 10)  # Closer = higher confidence
+                if min_dist < 50:
+                    confidence = 10 - (min_dist / 10)
                     if confidence > highest_confidence:
                         highest_confidence = confidence
                         best_category = "winner"
                         best_nomination = nomination
             
-            # Check nominee keywords
+            # Check nominee keywords (lowest priority)
             nominee_matches = list(nominee_kw.finditer(window_lower))
-            if nominee_matches:
+            if nominee_matches and highest_confidence < 10:  # Only if no strong winner/presenter signal
                 min_dist = min(abs(match.start() - name_pos) for match in nominee_matches)
                 if min_dist < 50:
                     confidence = 8 - (min_dist / 10)
                     if confidence > highest_confidence:
                         highest_confidence = confidence
                         best_category = "nominee"
-                        best_nomination = nomination
-            
-            # Check presenter keywords
-            presenter_matches = list(presenter_kw.finditer(window_lower))
-            if presenter_matches:
-                min_dist = min(abs(match.start() - name_pos) for match in presenter_matches)
-                if min_dist < 50:
-                    confidence = 6 - (min_dist / 10)
-                    if confidence > highest_confidence:
-                        highest_confidence = confidence
-                        best_category = "presenter"
                         best_nomination = nomination
             
             # Default to winner if we found nomination but no keywords
@@ -275,7 +326,7 @@ def get_tickets(tweet_data):
             elif cat == "nominee":
                 ticket["confidence"] += 2
             elif cat == "presenter":
-                ticket["confidence"] += 1
+                ticket["confidence"] += 4  # Higher weight for presenters
             elif cat == "host":
                 ticket["confidence"] += 2
             
@@ -285,7 +336,7 @@ def get_tickets(tweet_data):
             seen_combinations.add(sig)
 
         # Only keep tickets with meaningful confidence
-        if ticket["confidence"] >= 2:
+        if ticket["confidence"] >= 1:
             tickets.append(ticket)
 
     print(f"\nExtracted {len(tickets)} high-confidence tickets")

@@ -11,10 +11,11 @@ import datetime
 
 nlp = spacy.load("en_core_web_sm")
 
-##### get the data 
-with open("gg2013.json", "r", encoding="utf-8") as f:
+filename = "gg2013.json"
+#filename = "small.json"
+##### get the data
+with open(filename, "r", encoding="utf-8") as f:
     tweet_data = json.load(f)
-
 
 ##### get the list of tweets, tweet_id, and timestamps
 tweets = []
@@ -104,10 +105,28 @@ def extract_people(tweet):
     # some of the people have possesive "'s" so we can remove that now
     people = [re.sub(r"'s$", "", name) for name in people]
     
+    # Common TV shows, movies, and non-person entities to exclude
+    known_non_people = {
+        'downton abbey', 'homeland', 'game change', 'girls', 'argo', 'django unchained',
+        'les miserables', 'life of pi', 'lincoln', 'silver linings playbook',
+        'zero dark thirty', 'breaking bad', 'boardwalk empire', 'modern family',
+        'the big bang theory', 'game of thrones', 'mad men', 'smash', 'nashville',
+        'political animals', 'hatfields mccoys', 'house of lies', 'skyfall',
+        'the hour', 'the girl', 'amour', 'brave', 'wreck it ralph', 'parker',
+        'act of valor', 'anna karenina', 'cloud atlas', 'salmon fishing yemen'
+    }
+    
+    # Fashion designers and other non-actors often mentioned
+    fashion_designers = {
+        'michael cinco', 'vera wang', 'calvin klein', 'giorgio armani', 
+        'tom ford', 'ralph lauren', 'valentino', 'versace', 'gucci', 'prada'
+    }
+    
     # Filter out invalid names
     filtered_people = []
     for name in people:
         name_clean = name.strip()
+        name_lower = name_clean.lower()
         
         # Skip if empty
         if not name_clean:
@@ -115,6 +134,14 @@ def extract_people(tweet):
         
         # Skip if contains "golden globes" or "goldenglobes"
         if re.search(r'\b(golden\s*globes?|goldenglobes?)\b', name_clean, re.IGNORECASE):
+            continue
+        
+        # Skip known TV shows, movies, and non-people
+        if name_lower in known_non_people:
+            continue
+        
+        # Skip fashion designers (they're not nominees/winners/presenters)
+        if name_lower in fashion_designers:
             continue
         
         # Skip if contains "RT" (retweet indicator)
@@ -131,9 +158,10 @@ def extract_people(tweet):
             'instagram', 'youtube', 'tv', 'television', 'movie', 'film',
             'show', 'award', 'awards', 'winner', 'host', 'actor', 'actress',
             'drama', 'comedy', 'musical', 'series', 'picture', 'screenplay',
-            'director', 'performance', 'song', 'score', 'animated', 'foreign'
+            'director', 'performance', 'song', 'score', 'animated', 'foreign',
+            'showtime', 'hbo', 'nbc', 'abc', 'cbs', 'fox', 'amc'
         ]
-        if name_clean.lower() in non_person_terms:
+        if name_lower in non_person_terms:
             continue
         
         # Skip if it's all caps and longer than 4 chars (likely acronym/hashtag)

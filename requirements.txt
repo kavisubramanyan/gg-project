@@ -7,3 +7,7 @@ inflection
 langdetect
 Levenshtein
 pandas
+scikit-learn
+numpy
+scipy
+networkx

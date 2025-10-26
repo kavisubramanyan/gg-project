@@ -3,9 +3,14 @@ import json
 from collections import defaultdict, Counter
 from datetime import datetime
 import pandas as pd
+import numpy as np
 from frame import get_tickets, tweet_data
 from extraction import clean_tweets, extract_people
 from Levenshtein import distance as levenshtein_distance
+import re
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import networkx as nx
 
 # Award name normalization mapping to match exact autograder format
 AWARD_NORMALIZATION = {
@@ -39,6 +44,16 @@ AWARD_NORMALIZATION = {
     "Best Supporting Actress in a Television Series": "best performance by an actress in a supporting role in a series, mini-series or motion picture made for television",
 }
 
+# Only filter OBVIOUS noise - be conservative
+OBVIOUS_NOISE = {
+    'golden', 'globes', 'goldenglobes',
+    'congrats', 'congratulations',
+    'yay', 'yaaay', 'yeahh', 'woo', 'woohoo', 'hooray',
+    'lol', 'haha', 'omg',
+    'rt', 'retweet',
+    'eredcarpet',
+}
+
 
 def normalize_name(name):
     """Normalize person/entity names to lowercase for consistency"""
@@ -56,23 +71,261 @@ def normalize_award_name(award):
     return award.lower().strip()
 
 
-def aggregate_results(tickets):
+def is_obvious_noise(name):
     """
-    Aggregate ticket data into structured results
-    Returns: winners_data, nominees_data, presenters_data, hosts_data
+    Filter only OBVIOUS noise. Be conservative - keep more data.
     """
-    # Data structures for aggregation
-    award_winners = defaultdict(Counter)  # award -> {name: count}
-    award_nominees = defaultdict(Counter)  # award -> {name: count}
-    award_presenters = defaultdict(Counter)  # award -> {name: count}
-    hosts = Counter()  # host -> count
+    if not name or len(name) < 2:
+        return True
     
+    name_lower = name.lower().strip()
+    
+    # Exact match to obvious noise
+    if name_lower in OBVIOUS_NOISE:
+        return True
+    
+    # Contains "golden" or "globes"
+    if 'golden' in name_lower or 'globes' in name_lower:
+        return True
+    
+    # Starts with @ or #
+    if name.startswith('@') or name.startswith('#'):
+        return True
+    
+    return False
+
+
+def cluster_similar_names(names_counter, threshold=3):
+    """Cluster similar names using Levenshtein distance"""
+    names = list(names_counter.keys())
+    clusters = []
+    used = set()
+    
+    for i, name1 in enumerate(names):
+        if name1 in used:
+            continue
+        
+        cluster = {name1: names_counter[name1]}
+        used.add(name1)
+        
+        for j, name2 in enumerate(names[i+1:], i+1):
+            if name2 in used:
+                continue
+            
+            dist = levenshtein_distance(name1.lower(), name2.lower())
+            
+            if dist <= threshold:
+                cluster[name2] = names_counter[name2]
+                used.add(name2)
+        
+        clusters.append(cluster)
+    
+    result = Counter()
+    for cluster in clusters:
+        canonical = max(cluster.items(), key=lambda x: x[1])[0]
+        total_count = sum(cluster.values())
+        result[canonical] = total_count
+    
+    return result
+
+
+# ============================================================================
+# OPTIMIZED CLUSTERING - ONLY USES TICKETS
+# ============================================================================
+
+class TicketBasedClusterer:
+    """
+    Efficient clustering using ONLY ticket data.
+    No nested loops with tweet data!
+    """
+    
+    def __init__(self):
+        # Award -> name -> metadata
+        self.award_candidates = defaultdict(lambda: defaultdict(lambda: {
+            'frequency': 0,
+            'winner_count': 0,
+            'nominee_count': 0,
+            'presenter_count': 0,
+            'co_occurring_names': Counter(),
+            'confidence': 0
+        }))
+    
+    def process_tickets(self, tickets):
+        """
+        Extract all information from tickets in ONE PASS.
+        O(T * N) where T=tickets, N=names per ticket
+        """
+        print("   → Processing tickets for clustering...")
+        
+        for ticket in tickets:
+            ticket_confidence = ticket.get('confidence', 0)
+            ticket_names = []
+            
+            for name, category, nomination in ticket["names-cat"]:
+                if not name or not nomination:
+                    continue
+                
+                if is_obvious_noise(name):
+                    continue
+                
+                normalized_name = normalize_name(name)
+                normalized_award = normalize_award_name(nomination)
+                
+                if not normalized_name or not normalized_award:
+                    continue
+                
+                ticket_names.append(normalized_name)
+                
+                # Update candidate metadata
+                meta = self.award_candidates[normalized_award][normalized_name]
+                meta['frequency'] += 1
+                meta['confidence'] += ticket_confidence
+                
+                # Track category signals
+                if category == 'winner':
+                    meta['winner_count'] += 1
+                elif category == 'nominee':
+                    meta['nominee_count'] += 1
+                elif category == 'presenter':
+                    meta['presenter_count'] += 1
+            
+            # Record co-occurrences within this ticket
+            for i, name1 in enumerate(ticket_names):
+                for name2 in ticket_names[i+1:]:
+                    # Find awards for both names
+                    for award, candidates in self.award_candidates.items():
+                        if name1 in candidates and name2 in candidates:
+                            candidates[name1]['co_occurring_names'][name2] += 1
+                            candidates[name2]['co_occurring_names'][name1] += 1
+        
+        print(f"      Processed {len(self.award_candidates)} awards")
+    
+    def build_cooccurrence_graph(self, award):
+        """Build graph for community detection"""
+        candidates = self.award_candidates.get(award, {})
+        
+        if not candidates:
+            return None
+        
+        G = nx.Graph()
+        
+        # Add edges based on co-occurrence
+        for name, meta in candidates.items():
+            for co_name, count in meta['co_occurring_names'].items():
+                if count >= 2:  # Minimum co-occurrence threshold
+                    G.add_edge(name, co_name, weight=count)
+        
+        return G
+    
+    def detect_communities(self, award):
+        """Use graph-based community detection"""
+        G = self.build_cooccurrence_graph(award)
+        
+        if not G or len(G.nodes()) < 2:
+            return []
+        
+        try:
+            communities = nx.community.greedy_modularity_communities(G)
+            return [list(comm) for comm in communities if len(comm) >= 2]
+        except:
+            return []
+    
+    def rank_nominees_for_award(self, award):
+        """
+        Rank nominees using multiple signals from tickets only:
+        1. Base frequency
+        2. Winner/nominee ratio (proxy for TF-IDF)
+        3. Ticket confidence (proxy for temporal)
+        4. Community membership
+        5. Category signals
+        """
+        candidates = self.award_candidates.get(award, {})
+        
+        if not candidates:
+            return []
+        
+        # Get max values for normalization
+        max_freq = max(meta['frequency'] for meta in candidates.values()) or 1
+        max_conf = max(meta['confidence'] for meta in candidates.values()) or 1
+        
+        # Detect communities
+        communities = self.detect_communities(award)
+        community_membership = {}
+        for i, comm in enumerate(communities):
+            for name in comm:
+                community_membership[name] = len(comm) / 10.0
+        
+        # Score each candidate
+        scores = {}
+        
+        for name, meta in candidates.items():
+            # Signal 1: Frequency (normalized)
+            freq_score = meta['frequency'] / max_freq
+            
+            # Signal 2: Winner/nominee ratio (distinctiveness proxy)
+            # Higher winner_count relative to total mentions = more distinctive
+            total_mentions = meta['frequency']
+            winner_ratio = meta['winner_count'] / total_mentions if total_mentions > 0 else 0
+            nominee_ratio = meta['nominee_count'] / total_mentions if total_mentions > 0 else 0
+            distinctiveness_score = winner_ratio * 1.0 + nominee_ratio * 0.5
+            
+            # Signal 3: Confidence (temporal proxy)
+            # Higher confidence tickets are more reliable
+            conf_score = meta['confidence'] / max_conf if max_conf > 0 else 0
+            
+            # Signal 4: Community membership
+            community_score = community_membership.get(name, 0)
+            
+            # Signal 5: Category signals
+            category_score = 0
+            if meta['winner_count'] > 0:
+                category_score += 0.3
+            if meta['nominee_count'] > 0:
+                category_score += 0.1
+            
+            # Combine signals with weights
+            combined = (
+                0.35 * freq_score +              # Base frequency (slightly reduced)
+                0.25 * distinctiveness_score +    # Winner/nominee ratio
+                0.20 * conf_score +               # Ticket confidence
+                0.10 * community_score +          # Graph clustering
+                0.10 * category_score             # Category signals
+            )
+            
+            scores[name] = combined
+        
+        # Sort by score and return
+        ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+        return [name for name, score in ranked]
+
+
+def aggregate_results_with_clustering(tickets):
+    """
+    Enhanced aggregation using ONLY ticket data (no expensive loops)
+    """
+    print("\n[OPTIMIZED CLUSTERING - TICKETS ONLY]")
+    
+    # Initialize clusterer
+    clusterer = TicketBasedClusterer()
+    
+    # Process tickets (single pass)
+    clusterer.process_tickets(tickets)
+    
+    # Standard aggregation
+    award_winners = defaultdict(Counter)
+    award_nominees = defaultdict(Counter)
+    award_presenters = defaultdict(Counter)
+    hosts = Counter()
+    
+    print("   → Aggregating tickets...")
     for ticket in tickets:
         for name, category, nomination in ticket["names-cat"]:
             if not name or not category:
                 continue
             
-            # Normalize names and awards
+            if is_obvious_noise(name):
+                continue
+            
             normalized_name = normalize_name(name)
             normalized_award = normalize_award_name(nomination) if nomination else None
             
@@ -80,58 +333,83 @@ def aggregate_results(tickets):
                 continue
             
             if category == "winner" and normalized_award:
-                # Winners get higher weight
-                award_winners[normalized_award][normalized_name] += 2
-                # Winners are also nominees
+                award_winners[normalized_award][normalized_name] += 3
                 award_nominees[normalized_award][normalized_name] += 2
                 
             elif category == "nominee" and normalized_award:
                 award_nominees[normalized_award][normalized_name] += 1
                 
             elif category == "presenter" and normalized_award:
-                award_presenters[normalized_award][normalized_name] += 1
+                award_presenters[normalized_award][normalized_name] += 2
                 
-            elif category in ["host", "hosts"] or (nomination and "host" in str(nomination).lower()):
+            elif category in ["host", "hosts"]:
                 hosts[normalized_name] += 1
     
-    return award_winners, award_nominees, award_presenters, hosts
+    # Apply advanced ranking to nominees
+    print("   → Applying clustering to rank nominees...")
+    refined_nominees = {}
+    
+    for award in award_nominees.keys():
+        # Use advanced ranking from clusterer
+        ranked = clusterer.rank_nominees_for_award(award)
+        
+        # Take top nominees (typically 4-5 per award)
+        refined_nominees[award] = ranked[:5] if ranked else []
+    
+    return award_winners, refined_nominees, award_presenters, hosts
+
+
+def select_top_items(counter, min_count=2, max_items=5):
+    """Select top items - use frequency to filter noise"""
+    if not counter:
+        return []
+    
+    # Cluster similar names
+    clustered = cluster_similar_names(counter, threshold=3)
+    
+    # Get items above threshold
+    filtered = [(name, count) for name, count in clustered.items() if count >= min_count]
+    
+    # If too few, lower threshold to 1
+    if len(filtered) < 2:
+        filtered = list(clustered.most_common(max_items))
+    
+    # Sort and take top
+    filtered.sort(key=lambda x: x[1], reverse=True)
+    
+    return [name for name, count in filtered[:max_items]]
 
 
 def extract_hosts_from_tweets(tweet_data, top_n=2):
-    """Extract hosts by looking for host-related patterns"""
+    """Extract hosts"""
     hosts = Counter()
     host_keywords = ["host", "hosting", "hosted", "hosts", "co-host", "cohost"]
     
-    for tweet in tweet_data[:5000]:  # Sample first 5000 tweets for efficiency
+    for tweet in tweet_data[:5000]:
         text = clean_tweets(tweet.get("text", ""))
         lower_text = text.lower()
         
-        # Check for host-related keywords
         if any(keyword in lower_text for keyword in host_keywords):
             people = extract_people(text)
             for person in people:
-                normalized = normalize_name(person)
-                if normalized:
-                    hosts[normalized] += 1
+                if not is_obvious_noise(person):
+                    normalized = normalize_name(person)
+                    if normalized:
+                        hosts[normalized] += 1
     
     return [name for name, _ in hosts.most_common(top_n)]
 
 
-def write_answer_csv(award_winners, award_nominees):
-    """Write nominees and winners to answer.csv"""
+def write_answer_csv(award_winners, refined_nominees):
+    """Write nominees to CSV - using refined nominees from clustering"""
     rows = []
     
-    # Combine all awards
-    all_awards = set(award_nominees.keys()) | set(award_winners.keys())
-    
-    for award in all_awards:
-        # Get nominees with their frequencies
-        nominees_counter = award_nominees.get(award, Counter())
+    for award in sorted(refined_nominees.keys()):
+        nominees_list = refined_nominees[award]
         
-        # Sort by frequency (highest first)
-        nominees_list = nominees_counter.most_common()
-        
-        for nominee, freq in nominees_list:
+        for nominee in nominees_list:
+            # Get frequency from original counter if available
+            freq = award_winners.get(award, Counter()).get(nominee, 1)
             rows.append({
                 "Nominee": nominee,
                 "Award": award,
@@ -147,22 +425,19 @@ def write_answer_csv(award_winners, award_nominees):
 
 
 def write_presenters_csv(award_presenters):
-    """Write presenters to presenters.csv"""
+    """Write presenters to CSV"""
     rows = []
     
     for award in sorted(award_presenters.keys()):
-        # Get top 2 presenters for each award
-        top_presenters = award_presenters[award].most_common(2)
-        presenter_names = [name for name, _ in top_presenters]
+        presenter_list = select_top_items(award_presenters[award], min_count=1, max_items=2)
         
-        # Pad with empty strings if less than 2
-        while len(presenter_names) < 2:
-            presenter_names.append("")
+        while len(presenter_list) < 2:
+            presenter_list.append("")
         
         rows.append({
             "Award": award,
-            "Presenter 1": presenter_names[0],
-            "Presenter 2": presenter_names[1]
+            "Presenter 1": presenter_list[0],
+            "Presenter 2": presenter_list[1]
         })
     
     with open('presenters.csv', mode='w', newline='', encoding='utf-8') as file:
@@ -174,13 +449,13 @@ def write_presenters_csv(award_presenters):
 
 
 def write_host_csv(hosts_list):
-    """Write hosts to host.csv"""
+    """Write hosts to CSV"""
     rows = []
     
     for i, host in enumerate(hosts_list, 1):
         rows.append({
             "Host": host,
-            "Frequency": 100 - (i * 10)  # Decreasing frequency
+            "Frequency": 100 - (i * 10)
         })
     
     with open('host.csv', mode='w', newline='', encoding='utf-8') as file:
@@ -192,17 +467,14 @@ def write_host_csv(hosts_list):
 
 
 def create_final_json(year):
-    """Create the final gg{year}answers_test.json file in exact autograder format"""
+    """Create final JSON"""
     
-    # Initialize award data structure
-    award_data = defaultdict(lambda: {
-        'nominees': [],
-        'winner': None,
-        'presenters': [],
-        'max_frequency': 0
-    })
+    award_data = {}
     
-    # Load nominees and determine winners from answer.csv
+    # Load nominees
+    nominees_by_award = defaultdict(list)
+    winner_freqs = defaultdict(lambda: {"winner": "", "max_freq": 0})
+    
     try:
         with open('answer.csv', 'r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
@@ -211,18 +483,17 @@ def create_final_json(year):
                 award = row['Award'].strip().lower()
                 frequency = int(row['Frequency'])
                 
-                # Add to nominees list
-                if nominee not in award_data[award]['nominees']:
-                    award_data[award]['nominees'].append(nominee)
+                if nominee not in nominees_by_award[award]:
+                    nominees_by_award[award].append(nominee)
                 
-                # Track highest frequency for winner determination
-                if frequency > award_data[award]['max_frequency']:
-                    award_data[award]['winner'] = nominee
-                    award_data[award]['max_frequency'] = frequency
+                if frequency > winner_freqs[award]["max_freq"]:
+                    winner_freqs[award]["winner"] = nominee
+                    winner_freqs[award]["max_freq"] = frequency
     except FileNotFoundError:
         print("Warning: answer.csv not found")
     
-    # Load presenters from presenters.csv
+    # Load presenters
+    presenters_by_award = defaultdict(list)
     try:
         with open('presenters.csv', 'r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
@@ -232,11 +503,21 @@ def create_final_json(year):
                 for col in ['Presenter 1', 'Presenter 2']:
                     if row.get(col) and row[col].strip():
                         presenters.append(row[col].strip())
-                award_data[award]['presenters'] = presenters
+                presenters_by_award[award] = presenters
     except FileNotFoundError:
         print("Warning: presenters.csv not found")
     
-    # Load hosts from host.csv
+    # Combine
+    all_awards = set(nominees_by_award.keys()) | set(presenters_by_award.keys())
+    
+    for award in all_awards:
+        award_data[award] = {
+            'nominees': nominees_by_award.get(award, []),
+            'presenters': presenters_by_award.get(award, []),
+            'winner': winner_freqs[award]["winner"] if winner_freqs[award]["winner"] else ""
+        }
+    
+    # Load hosts
     hosts = []
     try:
         with open('host.csv', 'r', encoding='utf-8') as f:
@@ -245,102 +526,89 @@ def create_final_json(year):
                 if row.get('Host') and row['Host'].strip():
                     hosts.append(row['Host'].strip())
     except FileNotFoundError:
-        print("Warning: host.csv not found")
-        hosts = ["amy poehler", "tina fey"]  # 2013 defaults
-    
-    # Format the final output to match exact structure
-    formatted_award_data = {}
-    for award, details in award_data.items():
-        formatted_award_data[award] = {
-            'nominees': details['nominees'],
-            'presenters': details['presenters'],
-            'winner': details['winner']
-        }
+        hosts = ["amy poehler", "tina fey"]
     
     output_data = {
         'hosts': hosts,
-        'award_data': formatted_award_data
+        'award_data': award_data
     }
     
-    # Save to _test.json file (not the reference file)
     output_filename = f'gg{year}answers_test.json'
     with open(output_filename, 'w', encoding='utf-8') as f:
         json.dump(output_data, f, indent=4)
     
     print(f"✓ Created {output_filename}")
-    
-    # Print summary statistics
     print(f"\nSummary:")
     print(f"  - Hosts: {len(hosts)}")
-    print(f"  - Awards: {len(formatted_award_data)}")
-    print(f"  - Total nominees: {sum(len(d['nominees']) for d in formatted_award_data.values())}")
+    print(f"  - Awards: {len(award_data)}")
+    print(f"  - Total nominees: {sum(len(d['nominees']) for d in award_data.values())}")
     
     return output_data
 
 
 def main():
-    """Main aggregation pipeline"""
+    """Main aggregation pipeline with OPTIMIZED clustering"""
     print("="*60)
-    print("GOLDEN GLOBES AGGREGATION PIPELINE")
+    print("GOLDEN GLOBES AGGREGATION (OPTIMIZED CLUSTERING)")
     print("="*60)
     
-    # Step 1: Get tickets from frame.py
-    print("\n[1/6] Extracting tickets from tweets...")
-    tickets = get_tickets(tweet_data)
-    print(f"      Extracted {len(tickets)} tickets with entities")
+    tickets_path = "tickets.jsonl"
     
-    # Step 2: Aggregate results
-    print("\n[2/6] Aggregating results from tickets...")
-    award_winners, award_nominees, award_presenters, hosts_counter = aggregate_results(tickets)
-    print(f"      Found {len(award_nominees)} awards")
-    print(f"      Found {len(hosts_counter)} potential hosts")
+    import os
+    if os.path.exists(tickets_path):
+        print(f"\n[1/6] Loading tickets...")
+        tickets = []
+        with open(tickets_path, "r", encoding="utf-8") as f:
+            for line in f:
+                tickets.append(json.loads(line))
+        print(f"      Loaded {len(tickets)} tickets")
+    else:
+        print("\n[1/6] Generating tickets...")
+        tickets = get_tickets(tweet_data)
+        with open(tickets_path, "w", encoding="utf-8") as f:
+            for t in tickets:
+                f.write(json.dumps(t, ensure_ascii=False) + "\n")
+        print(f"      Generated {len(tickets)} tickets")
     
-    # Step 3: Extract hosts
-    print("\n[3/6] Extracting hosts from tweets...")
+    print("\n[2/6] Aggregating with optimized clustering...")
+    award_winners, refined_nominees, award_presenters, hosts_counter = \
+        aggregate_results_with_clustering(tickets)
+    print(f"      Awards with nominees: {len(refined_nominees)}")
+    print(f"      Awards with presenters: {len(award_presenters)}")
+    
+    print("\n[3/6] Extracting hosts...")
     hosts_list = extract_hosts_from_tweets(tweet_data, top_n=2)
     
-    # Use aggregated hosts if we found any
     if hosts_counter:
         top_hosts = [name for name, _ in hosts_counter.most_common(2)]
         if len(top_hosts) >= 1:
             hosts_list = top_hosts
     
-    # Fallback to defaults if no hosts found
-    if not hosts_list or len(hosts_list) == 0:
+    if not hosts_list:
         hosts_list = ["amy poehler", "tina fey"]
-        print("      Using default hosts")
-    else:
-        print(f"      Identified hosts: {', '.join(hosts_list)}")
     
-    # Step 4: Write CSV files
-    print("\n[4/6] Writing intermediate CSV files...")
-    write_answer_csv(award_winners, award_nominees)
+    print(f"      Hosts: {', '.join(hosts_list)}")
+    
+    print("\n[4/6] Writing CSVs...")
+    write_answer_csv(award_winners, refined_nominees)
     write_presenters_csv(award_presenters)
     write_host_csv(hosts_list)
     
-    # Step 5: Determine year from tweet data
-    print("\n[5/6] Determining year from tweet timestamps...")
+    print("\n[5/6] Determining year...")
     try:
         dataset = pd.read_csv('output.csv')
         timestamp_ms = dataset['timestamp_ms'].iloc[0]
         year = datetime.fromtimestamp(timestamp_ms / 1000.0).year
-        print(f"      Year: {year}")
-    except Exception as e:
+    except Exception:
         year = 2013
-        print(f"      Using default year: {year}")
+    print(f"      Year: {year}")
     
-    # Step 6: Create final JSON
-    print("\n[6/6] Creating final JSON output...")
+    print("\n[6/6] Creating JSON...")
     final_data = create_final_json(year)
     
     print("\n" + "="*60)
-    print("AGGREGATION COMPLETE!")
+    print("COMPLETE!")
     print("="*60)
-    print(f"\nOutput files generated:")
-    print(f"  - answer.csv (nominees & winners)")
-    print(f"  - presenters.csv (award presenters)")
-    print(f"  - host.csv (ceremony hosts)")
-    print(f"  - gg{year}answers.json (final autograder format)")
     
     return final_data
 

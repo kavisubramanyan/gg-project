@@ -40,7 +40,11 @@ def get_hosts(year):
     of this function or what it returns.'''
     with open('gg%sanswers_test.json' % year, 'r') as f:
         data = json.load(f)
-    hosts = data["hosts"]
+    hosts = data.get("hosts", [])
+    # Ensure hosts is a list and contains no None values
+    if not isinstance(hosts, list):
+        hosts = [hosts] if hosts else []
+    hosts = [h for h in hosts if h is not None]
     return hosts
 
 def get_awards(year):
@@ -59,8 +63,13 @@ def get_nominees(year):
     # Use official awards as keys, return empty list if award not in data
     nominees = {}
     for award in OFFICIAL_AWARDS:
-        if award in data["award_data"]:
-            nominees[award] = data["award_data"][award].get("nominees", [])
+        if award in data.get("award_data", {}):
+            noms = data["award_data"][award].get("nominees", [])
+            # Ensure it's a list and filter out None values
+            if not isinstance(noms, list):
+                noms = [noms] if noms else []
+            noms = [n for n in noms if n is not None]
+            nominees[award] = noms
         else:
             nominees[award] = []
     
@@ -76,8 +85,10 @@ def get_winner(year):
     # Use official awards as keys, return empty string if award not in data
     winners = {}
     for award in OFFICIAL_AWARDS:
-        if award in data["award_data"]:
-            winners[award] = data["award_data"][award].get("winner", "")
+        if award in data.get("award_data", {}):
+            winner = data["award_data"][award].get("winner", "")
+            # CRITICAL FIX: Ensure winner is never None
+            winners[award] = winner if winner is not None else ""
         else:
             winners[award] = ""
     
@@ -93,8 +104,13 @@ def get_presenters(year):
     # Use official awards as keys, return empty list if award not in data
     presenters = {}
     for award in OFFICIAL_AWARDS:
-        if award in data["award_data"]:
-            presenters[award] = data["award_data"][award].get("presenters", [])
+        if award in data.get("award_data", {}):
+            pres = data["award_data"][award].get("presenters", [])
+            # Ensure it's a list and filter out None values
+            if not isinstance(pres, list):
+                pres = [pres] if pres else []
+            pres = [p for p in pres if p is not None]
+            presenters[award] = pres
         else:
             presenters[award] = []
     
