@@ -1,0 +1,16 @@
+Host: "Seth Meyers"
+Host Candidates: "candidate_1", "candidate_2", "Seth Meyers"
+
+Awards: "Best Motion Picture - Drama", "Best Motion Picture - Musical or Comedy", "award_1", "award_2", "award_3"
+
+Award: "Best Motion Picture – Drama"
+Presenters: "Barbra Streisand"
+Presenters Candidates: "candidate_1", "candidate_2", "Barbra Streisand"
+Nominees: "Three Billboards Outside Ebbing, Missouri", "Call Me by Your Name", "Dunkirk", "The Post", "The Shape of Water"
+Nominee Candidates: "candidate_1", "candidate_2", "candidate_3", "candidate_4", "candidate_5"
+Winner: "Three Billboards Outside Ebbing, Missouri"
+Winner Candidates: "candidate_1", "candidate_2", "Three Billboards Outside Ebbing, Missouri"
+
+Best Dressed: "Jane Doe"
+Worst Dressed: "John Doe"
+Most Controversially Dressed: "John Smith"

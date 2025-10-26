@@ -1,0 +1,54 @@
+{
+  "host": "Seth Meyers",
+  "host_candidates": [
+    "candidate_1",
+    "candidate_2",
+    "Seth Meyers"
+  ],
+  "awards": [
+    "Best Motion Picture - Drama",
+    "Best Motion Picture - Musical or Comedy",
+    "award_1",
+    "award_2",
+    "award_3"
+  ],
+  "hard_coded_awards": [
+    "Best Motion Picture - Drama",
+    "Best Motion Picture - Musical or Comedy",
+    "Best Performance by an Actor in a Motion Picture - Drama",
+    "Best Performance by an Actress in a Motion Picture - Drama"
+  ],
+  "Best Motion Picture - Drama": {
+    "presenters": [
+      "Barbra Streisand"
+    ],
+    "presenters_candidates": [
+      "candidate_1",
+      "candidate_2",
+      "Barbra Streisand"
+    ],
+    "nominees": [
+      "Three Billboards Outside Ebbing, Missouri",
+      "Call Me by Your Name",
+      "Dunkirk",
+      "The Post",
+      "The Shape of Water"
+    ],
+    "nominee_candidates": [
+      "candidate_1",
+      "candidate_2",
+      "candidate_3",
+      "candidate_4",
+      "candidate_5"
+    ],
+    "winner": "Three Billboards Outside Ebbing, Missouri",
+    "winner_candidates": [
+      "candidate_1",
+      "candidate_2",
+      "Three Billboards Outside Ebbing, Missouri"
+    ]
+  },
+  "best_dressed": "Jane Doe",
+  "worst_dressed": "John Doe",
+  "most_controversially_dressed": "John Smith"
+}

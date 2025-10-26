@@ -1,14 +1,19 @@
-name: gg337
+name: gg-golden-globes
 channels:
-  - defaults
+  - conda-forge
 dependencies:
   - python=3.10
-  - spacy
-  - nltk
-  - jupyterlab
-  - ftfy
-  - unidecode
-  - inflection
-  - pip  # Include pip for installing langdetect
+  - pandas=2.2.2
+  - numpy=1.26.4
+  - regex=2024.9.11
+  - tqdm=4.66.4
+  - rapidfuzz=3.8.1
+  - spacy=3.7.4
+  - nltk=3.9.1
+  - scikit-learn=1.4.2
+  - pymongo=4.7.2
+  - beautifulsoup4=4.12.3
+  - pip
   - pip:
-      - langdetect  # Install langdetect via pip
+      # Add pip-only packages here if needed later
+      -
