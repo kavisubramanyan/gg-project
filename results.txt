@@ -1,0 +1,214 @@
+Host: "Amy Poehler"
+
+Awards: "best motion picture comedy or musical les miserables", "best supporting actress in a motion picture", "best actor in a motion picture comedy or", "best motion picture drama argo", "best original song motion picture skyfall by", "best motion picture drama", "best actress in a motion picture comedy or", "best supporting actor in a motion picture", "best supporting actress in a motion picture anne hathaway for les mis", "best actor in a motion picture drama", "best supporting actress in a tv movie miniseries or series", "best motion picture comedy or musical", "best screenplay quentin tarantino django unchained", "best speech ever", "best television series drama homeland", "best supporting actress", "best actress in a comedy series", "best animated feature film brave", "best hosts ever", "best original score mychael danna life of pi", "best original song", "best actress in a motion picture drama jessica chastain zero dark thirty", "best supporting actor", "best actress in a motion picture comedy", "best foreign film amour", "best actor in a motion picture comedy or musical for les miserables"
+
+Award: "Best Motion Picture - Drama"
+Presenters: "julia roberts"
+Nominees: []
+Winner: "Argo"
+
+Winner Sentiment: Positive (e.g., "Argo and Zero Dark Thirty great movies! #GoldenGlobes")
+Presenter Sentiment: Neutral
+
+Award: "Best Motion Picture - Comedy Or Musical"
+Presenters: "dustin hoffman"
+Nominees: []
+Winner: "Les Miserables"
+
+Winner Sentiment: Positive (e.g., "RT @SoapNanny: I want Les Miserables to win soooooo bad!!!!! #GoldenGlobes")
+Presenter Sentiment: Positive (e.g., "Dustin Hoffman: RULES.  watch Straight Time! #goldenglobes")
+
+Award: "Best Performance By An Actor In A Motion Picture - Drama"
+Presenters: "george clooney"
+Nominees: "damian lewis", "daniel day lewis", "mejor actor drama", "los miserables", "mejor actor dramatico"
+Winner: "Daniel Day Lewis"
+
+Winner Sentiment: Neutral (e.g., "Daniel Day Lewis = Babe. #GoldenGlobes")
+Presenter Sentiment: Positive (e.g., "@goldenglobes Saw George Clooney..:-) :-)")
+
+Award: "Best Performance By An Actress In A Motion Picture - Drama"
+Presenters: "Unknown"
+Nominees: "jessica chastain"
+Winner: "Jessica Chastain"
+
+Winner Sentiment: Positive (e.g., "Jessica Chastain is gorgeous #goldenglobes")
+Presenter Sentiment: Neutral
+
+Award: "Best Performance By An Actor In A Motion Picture - Comedy Or Musical"
+Presenters: "Unknown"
+Nominees: "hugh jackman", "les miserables", "musical don cheadle", "don cheadle", "hugh jackman les miserables"
+Winner: "Hugh Jackman"
+
+Winner Sentiment: Neutral (e.g., "Hugh Jackman is looking a bit too bronzed. Orange is not his color #GoldenGlobes")
+Presenter Sentiment: Neutral
+
+Award: "Best Performance By An Actress In A Motion Picture - Comedy Or Musical"
+Presenters: "will ferrell"
+Nominees: "lena dunham", "comedy jennifer lawrence", "jennifer lawrence", "amy poehlor", "anne hathaway"
+Winner: "Jennifer Lawrence"
+
+Winner Sentiment: Neutral (e.g., "@FashionatRaces Jennifer Lawrence’s boobs look weird in that dress, which is tragic because she’s amazing #GoldenGlobes")
+Presenter Sentiment: Positive (e.g., "Why did I just flip out? Because one of the best people in the world showed up on the tv..Kristen Wiig #goldenglobes !")
+
+Award: "Best Performance By An Actor In A Supporting Role In A Motion Picture"
+Presenters: "bradley cooper"
+Nominees: "django unchained", "christoph waltz", "ed harris", "drama christoph waltz", "ed harris game change"
+Winner: "Christoph Waltz"
+
+Winner Sentiment: Positive (e.g., "Go Christoph Waltz! I loved him in #django @goldenglobes")
+Presenter Sentiment: Neutral (e.g., "RT @Rah_Demon: Kate Hudson y Sofia Vergara, impresionantes!! Guapísimas cada una en su estilo y súper elegantes. #redcarpet #GoldenGlobes")
+
+Award: "Best Performance By An Actress In A Supporting Role In A Motion Picture"
+Presenters: "maggie smith"
+Nominees: "anne hathaway", "les miserables", "les mis", "maggie smith", "miniseries maggie smith"
+Winner: "Anne Hathaway"
+
+Winner Sentiment: Neutral (e.g., "Anne Hathaway has got me living. #GoldenGlobes")
+Presenter Sentiment: Neutral
+
+Award: "Best Director - Motion Picture"
+Presenters: "halle berry"
+Nominees: "limp bizkit take a look around"
+Winner: "Ben Affleck"
+
+Winner Sentiment: Positive (e.g., "Oh Ben Affleck!! You look soo good! #GoldenGlobes #hot")
+Presenter Sentiment: Positive (e.g., "She still looks gorgeous. RT @_SoloDovePR: look at Halle Berry  #goldenglobes http://t.co/Wfcjerb9")
+
+Award: "Best Screenplay - Motion Picture"
+Presenters: "robert pattinson"
+Nominees: []
+Winner: "Quentin Tarantino"
+
+Winner Sentiment: Neutral (e.g., "RT @reaganward: Of course Quentin Tarantino is a fist bumper. #goldenglobes")
+Presenter Sentiment: Neutral (e.g., "RT @courtjustice: Robert Pattinson in @Gucci Made to Order Signoria tuxedo. MTC @TheFashionCourt http://t.co/CefjRU0R @GoldenGlobes http://t.co/kA0PUx4E")
+
+Award: "Best Original Score - Motion Picture"
+Presenters: "jason statham"
+Nominees: []
+Winner: "Mychael Danna"
+
+Winner Sentiment: Neutral
+Presenter Sentiment: Neutral (e.g., "Jennifer Lopez's lace dress? Thoughts? #GoldenGlobes")
+
+Award: "Best Original Song - Motion Picture"
+Presenters: "kanye west"
+Nominees: []
+Winner: "Skyfall"
+
+Winner Sentiment: Positive (e.g., "Who will win @taylorswift13 for #HungerGames or @OfficialAdele for #Skyfall? @goldenglobes @BootsandHearts")
+Presenter Sentiment: Neutral
+
+Award: "Best Animated Feature Film"
+Presenters: "sacha baron cohen"
+Nominees: []
+Winner: "Brave"
+
+Winner Sentiment: Positive (e.g., "Matt Lauer fawns all over Hugh Jackman saying he is so brave b/c he acted in a movie. #LeftwingBravery #GoldenGlobes #TCOT #perspective")
+Presenter Sentiment: Positive (e.g., "I want to listen to a long conversation between Adele and Sacha Baron Cohen. #goldenglobes #redcarpet")
+
+Award: "Best Foreign Language Film"
+Presenters: "stallone schwarzenegger"
+Nominees: []
+Winner: "Amour"
+
+Winner Sentiment: Positive (e.g., "And now I want Jessica Chastain's 40's glamour hair. And her roles...  #GoldenGlobes #redheadsrules")
+Presenter Sentiment: Neutral
+
+Award: "Best Television Series - Drama"
+Presenters: "lea michele"
+Nominees: "melhor serie", "como mejor", "entrega de los", "serie dramatica", "claire danes homeland"
+Winner: "Homeland"
+
+Winner Sentiment: Positive (e.g., "RT @eastwoodmcfly: Somebody please double check where Damian Lewis parked tonight. #justincase #GoldenGlobes #Homeland")
+Presenter Sentiment: Positive (e.g., "I'm literally crying because of the perfection that is Lea Michele! Screaming, she looks perfect! #ERedCarpet #GoldenGlobes")
+
+Award: "Best Television Series - Comedy Or Musical"
+Presenters: "lena dunham"
+Nominees: "house of lies", "melhor comedia musical", "noglobodeouro", "gana mejor serie", "mejor comedia"
+Winner: "Girls"
+
+Winner Sentiment: Positive (e.g., "Blanket, Coffee, #GoldenGlobes, Tina Fey, Amy Poehler, #GIRLS premiere! This is the most perfect Sunday night!")
+Presenter Sentiment: Neutral (e.g., "RT @Hollywood_com: Lena Dunham is WEARING clothes! #goldenglobes")
+
+Award: "Best Mini-Series Or Motion Picture Made For Television"
+Presenters: "Unknown"
+Nominees: "miniseries game change"
+Winner: "Game Change"
+
+Winner Sentiment: Neutral
+Presenter Sentiment: Neutral
+
+Award: "Best Performance By An Actor In A Television Series - Drama"
+Presenters: "Unknown"
+Nominees: "damian lewis", "homeland sorry bryan cranston"
+Winner: "Damian Lewis"
+
+Winner Sentiment: Positive (e.g., "RT @eastwoodmcfly: Somebody please double check where Damian Lewis parked tonight. #justincase #GoldenGlobes #Homeland")
+Presenter Sentiment: Neutral
+
+Award: "Best Performance By An Actress In A Television Series - Drama"
+Presenters: "Unknown"
+Nominees: "claire danes", "claire danes i", "drama claire danes"
+Winner: "Claire Danes"
+
+Winner Sentiment: Positive (e.g., "Best dressed: Jessica Chastain, Jennifer Lawrence, Claire Danes, &amp; @azizansari in Kevin Dior. #goldenglobes")
+Presenter Sentiment: Neutral
+
+Award: "Best Performance By An Actor In A Television Series - Comedy Or Musical"
+Presenters: "Unknown"
+Nominees: "don cheadle", "don cheadle but house"
+Winner: "Don Cheadle"
+
+Winner Sentiment: Neutral
+Presenter Sentiment: Neutral
+
+Award: "Best Performance By An Actress In A Television Series - Comedy Or Musical"
+Presenters: "Unknown"
+Nominees: "lena dunham", "ahh ahh ahh", "comedy lena dunham", "george clooney", "lena dunham girls"
+Winner: "Lena Dunham"
+
+Winner Sentiment: Neutral (e.g., "RT @Hollywood_com: Lena Dunham is WEARING clothes! #goldenglobes")
+Presenter Sentiment: Neutral
+
+Award: "Best Performance By An Actor In A Mini-Series Or Motion Picture Made For Television"
+Presenters: "Unknown"
+Nominees: "kevin costner", "ed harris", "damian fransisco", "tina fey", "ed harris game change"
+Winner: "Kevin Costner"
+
+Winner Sentiment: Positive (e.g., "RT @EliteTravelKara: Let's hope for a kevin costner win for @slate9 #goldenglobes")
+Presenter Sentiment: Neutral
+
+Award: "Best Performance By An Actress In A Mini-Series Or Motion Picture Made For Television"
+Presenters: "Unknown"
+Nominees: "julianne moore", "somehow amy poehler", "julianne moore game change", "jessica lange", "maggie smith"
+Winner: "Julianne Moore"
+
+Winner Sentiment: Positive (e.g., "My favourite of the #GoldenGlobes #redcarpet is Julianne Moore in Tom Ford. Gorgeous!!")
+Presenter Sentiment: Neutral
+
+Award: "Best Performance By An Actor In A Supporting Role In A Series, Mini-Series Or Motion Picture Made For Television"
+Presenters: "Unknown"
+Nominees: []
+Winner: "Ed Harris"
+
+Winner Sentiment: Neutral
+Presenter Sentiment: Neutral
+
+Award: "Best Performance By An Actress In A Supporting Role In A Series, Mini-Series Or Motion Picture Made For Television"
+Presenters: "Unknown"
+Nominees: "maggie smith", "tv movie maggie smith"
+Winner: "Maggie Smith"
+
+Winner Sentiment: Neutral
+Presenter Sentiment: Neutral
+
+Award: "Cecil B. Demille Award"
+Presenters: "robert downey jr"
+Nominees: "jodie foster", "lindsay lohan", "mel gibson", "tony stark", "elizabeth taylor"
+Winner: "Jodie Foster"
+
+Winner Sentiment: Positive (e.g., "RT @ABC: Jodie Foster trending at #3 on Twitter right now, pre-Lifetime Achievement Award at #GoldenGlobes. Red carpet pic: http://t.co/RT0FM4Ia")
+Presenter Sentiment: Neutral (e.g., "Vayamos a lo importante. Robert Downey Jr va a estar en los #GoldenGlobes, ¿no?")
+
+Winner Sentiment: Positive
+Presenter Sentiment: Neutral

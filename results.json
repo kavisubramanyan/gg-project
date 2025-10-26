@@ -1,0 +1,523 @@
+{
+  "host": "Amy Poehler",
+  "awards": [
+    "best motion picture comedy or musical les miserables",
+    "best supporting actress in a motion picture",
+    "best actor in a motion picture comedy or",
+    "best motion picture drama argo",
+    "best original song motion picture skyfall by",
+    "best motion picture drama",
+    "best actress in a motion picture comedy or",
+    "best supporting actor in a motion picture",
+    "best supporting actress in a motion picture anne hathaway for les mis",
+    "best actor in a motion picture drama",
+    "best supporting actress in a tv movie miniseries or series",
+    "best motion picture comedy or musical",
+    "best screenplay quentin tarantino django unchained",
+    "best speech ever",
+    "best television series drama homeland",
+    "best supporting actress",
+    "best actress in a comedy series",
+    "best animated feature film brave",
+    "best hosts ever",
+    "best original score mychael danna life of pi",
+    "best original song",
+    "best actress in a motion picture drama jessica chastain zero dark thirty",
+    "best supporting actor",
+    "best actress in a motion picture comedy",
+    "best foreign film amour",
+    "best actor in a motion picture comedy or musical for les miserables"
+  ],
+  "Best Motion Picture - Drama": {
+    "presenters": [
+      "julia roberts"
+    ],
+    "nominees": [],
+    "winner": "Argo"
+  },
+  "Best Motion Picture - Comedy Or Musical": {
+    "presenters": [
+      "dustin hoffman"
+    ],
+    "nominees": [],
+    "winner": "Les Miserables"
+  },
+  "Best Performance By An Actor In A Motion Picture - Drama": {
+    "presenters": [
+      "george clooney"
+    ],
+    "nominees": [
+      "damian lewis",
+      "daniel day lewis",
+      "mejor actor drama",
+      "los miserables",
+      "mejor actor dramatico"
+    ],
+    "winner": "Daniel Day Lewis"
+  },
+  "Best Performance By An Actress In A Motion Picture - Drama": {
+    "presenters": [
+      "Unknown"
+    ],
+    "nominees": [
+      "jessica chastain"
+    ],
+    "winner": "Jessica Chastain"
+  },
+  "Best Performance By An Actor In A Motion Picture - Comedy Or Musical": {
+    "presenters": [
+      "Unknown"
+    ],
+    "nominees": [
+      "hugh jackman",
+      "les miserables",
+      "musical don cheadle",
+      "don cheadle",
+      "hugh jackman les miserables"
+    ],
+    "winner": "Hugh Jackman"
+  },
+  "Best Performance By An Actress In A Motion Picture - Comedy Or Musical": {
+    "presenters": [
+      "will ferrell",
+      "kristen wiig"
+    ],
+    "nominees": [
+      "lena dunham",
+      "comedy jennifer lawrence",
+      "jennifer lawrence",
+      "amy poehlor",
+      "anne hathaway"
+    ],
+    "winner": "Jennifer Lawrence"
+  },
+  "Best Performance By An Actor In A Supporting Role In A Motion Picture": {
+    "presenters": [
+      "bradley cooper",
+      "kate hudson"
+    ],
+    "nominees": [
+      "django unchained",
+      "christoph waltz",
+      "ed harris",
+      "drama christoph waltz",
+      "ed harris game change"
+    ],
+    "winner": "Christoph Waltz"
+  },
+  "Best Performance By An Actress In A Supporting Role In A Motion Picture": {
+    "presenters": [
+      "maggie smith"
+    ],
+    "nominees": [
+      "anne hathaway",
+      "les miserables",
+      "les mis",
+      "maggie smith",
+      "miniseries maggie smith"
+    ],
+    "winner": "Anne Hathaway"
+  },
+  "Best Director - Motion Picture": {
+    "presenters": [
+      "halle berry"
+    ],
+    "nominees": [
+      "limp bizkit take a look around"
+    ],
+    "winner": "Ben Affleck"
+  },
+  "Best Screenplay - Motion Picture": {
+    "presenters": [
+      "robert pattinson",
+      "amanda seyfried"
+    ],
+    "nominees": [],
+    "winner": "Quentin Tarantino"
+  },
+  "Best Original Score - Motion Picture": {
+    "presenters": [
+      "jason statham",
+      "jennifer lopez"
+    ],
+    "nominees": [],
+    "winner": "Mychael Danna"
+  },
+  "Best Original Song - Motion Picture": {
+    "presenters": [
+      "kanye west"
+    ],
+    "nominees": [],
+    "winner": "Skyfall"
+  },
+  "Best Animated Feature Film": {
+    "presenters": [
+      "sacha baron cohen"
+    ],
+    "nominees": [],
+    "winner": "Brave"
+  },
+  "Best Foreign Language Film": {
+    "presenters": [
+      "stallone schwarzenegger",
+      "sylvester stallone"
+    ],
+    "nominees": [],
+    "winner": "Amour"
+  },
+  "Best Television Series - Drama": {
+    "presenters": [
+      "lea michele",
+      "claire danes"
+    ],
+    "nominees": [
+      "melhor serie",
+      "como mejor",
+      "entrega de los",
+      "serie dramatica",
+      "claire danes homeland"
+    ],
+    "winner": "Homeland"
+  },
+  "Best Television Series - Comedy Or Musical": {
+    "presenters": [
+      "lena dunham",
+      "jason bateman"
+    ],
+    "nominees": [
+      "house of lies",
+      "melhor comedia musical",
+      "noglobodeouro",
+      "gana mejor serie",
+      "mejor comedia"
+    ],
+    "winner": "Girls"
+  },
+  "Best Mini-Series Or Motion Picture Made For Television": {
+    "presenters": [
+      "Unknown"
+    ],
+    "nominees": [
+      "miniseries game change"
+    ],
+    "winner": "Game Change"
+  },
+  "Best Performance By An Actor In A Television Series - Drama": {
+    "presenters": [
+      "Unknown"
+    ],
+    "nominees": [
+      "damian lewis",
+      "homeland sorry bryan cranston"
+    ],
+    "winner": "Damian Lewis"
+  },
+  "Best Performance By An Actress In A Television Series - Drama": {
+    "presenters": [
+      "Unknown"
+    ],
+    "nominees": [
+      "claire danes",
+      "claire danes i",
+      "drama claire danes"
+    ],
+    "winner": "Claire Danes"
+  },
+  "Best Performance By An Actor In A Television Series - Comedy Or Musical": {
+    "presenters": [
+      "Unknown"
+    ],
+    "nominees": [
+      "don cheadle",
+      "don cheadle but house"
+    ],
+    "winner": "Don Cheadle"
+  },
+  "Best Performance By An Actress In A Television Series - Comedy Or Musical": {
+    "presenters": [
+      "Unknown"
+    ],
+    "nominees": [
+      "lena dunham",
+      "ahh ahh ahh",
+      "comedy lena dunham",
+      "george clooney",
+      "lena dunham girls"
+    ],
+    "winner": "Lena Dunham"
+  },
+  "Best Performance By An Actor In A Mini-Series Or Motion Picture Made For Television": {
+    "presenters": [
+      "Unknown"
+    ],
+    "nominees": [
+      "kevin costner",
+      "ed harris",
+      "damian fransisco",
+      "tina fey",
+      "ed harris game change"
+    ],
+    "winner": "Kevin Costner"
+  },
+  "Best Performance By An Actress In A Mini-Series Or Motion Picture Made For Television": {
+    "presenters": [
+      "Unknown"
+    ],
+    "nominees": [
+      "julianne moore",
+      "somehow amy poehler",
+      "julianne moore game change",
+      "jessica lange",
+      "maggie smith"
+    ],
+    "winner": "Julianne Moore"
+  },
+  "Best Performance By An Actor In A Supporting Role In A Series, Mini-Series Or Motion Picture Made For Television": {
+    "presenters": [
+      "Unknown"
+    ],
+    "nominees": [],
+    "winner": "Ed Harris"
+  },
+  "Best Performance By An Actress In A Supporting Role In A Series, Mini-Series Or Motion Picture Made For Television": {
+    "presenters": [
+      "Unknown"
+    ],
+    "nominees": [
+      "maggie smith",
+      "tv movie maggie smith"
+    ],
+    "winner": "Maggie Smith"
+  },
+  "Cecil B. Demille Award": {
+    "presenters": [
+      "robert downey jr"
+    ],
+    "nominees": [
+      "jodie foster",
+      "lindsay lohan",
+      "mel gibson",
+      "tony stark",
+      "elizabeth taylor"
+    ],
+    "winner": "Jodie Foster"
+  },
+  "sentiment": {
+    "summary": {
+      "winners": "positive",
+      "presenters": "neutral"
+    },
+    "winners": {
+      "best motion picture - drama": {
+        "label": "positive",
+        "example": "Argo and Zero Dark Thirty great movies! #GoldenGlobes"
+      },
+      "best motion picture - comedy or musical": {
+        "label": "positive",
+        "example": "RT @SoapNanny: I want Les Miserables to win soooooo bad!!!!! #GoldenGlobes"
+      },
+      "best performance by an actor in a motion picture - drama": {
+        "label": "neutral",
+        "example": "Daniel Day Lewis = Babe. #GoldenGlobes"
+      },
+      "best performance by an actress in a motion picture - drama": {
+        "label": "positive",
+        "example": "Jessica Chastain is gorgeous #goldenglobes"
+      },
+      "best performance by an actor in a motion picture - comedy or musical": {
+        "label": "neutral",
+        "example": "Hugh Jackman is looking a bit too bronzed. Orange is not his color #GoldenGlobes"
+      },
+      "best performance by an actress in a motion picture - comedy or musical": {
+        "label": "neutral",
+        "example": "@FashionatRaces Jennifer Lawrence\u2019s boobs look weird in that dress, which is tragic because she\u2019s amazing #GoldenGlobes"
+      },
+      "best performance by an actor in a supporting role in a motion picture": {
+        "label": "positive",
+        "example": "Go Christoph Waltz! I loved him in #django @goldenglobes"
+      },
+      "best performance by an actress in a supporting role in a motion picture": {
+        "label": "neutral",
+        "example": "Anne Hathaway has got me living. #GoldenGlobes"
+      },
+      "best director - motion picture": {
+        "label": "positive",
+        "example": "Oh Ben Affleck!! You look soo good! #GoldenGlobes #hot"
+      },
+      "best screenplay - motion picture": {
+        "label": "neutral",
+        "example": "RT @reaganward: Of course Quentin Tarantino is a fist bumper. #goldenglobes"
+      },
+      "best original score - motion picture": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best original song - motion picture": {
+        "label": "positive",
+        "example": "Who will win @taylorswift13 for #HungerGames or @OfficialAdele for #Skyfall? @goldenglobes @BootsandHearts"
+      },
+      "best animated feature film": {
+        "label": "positive",
+        "example": "Matt Lauer fawns all over Hugh Jackman saying he is so brave b/c he acted in a movie. #LeftwingBravery #GoldenGlobes #TCOT #perspective"
+      },
+      "best foreign language film": {
+        "label": "positive",
+        "example": "And now I want Jessica Chastain's 40's glamour hair. And her roles...  #GoldenGlobes #redheadsrules"
+      },
+      "best television series - drama": {
+        "label": "positive",
+        "example": "RT @eastwoodmcfly: Somebody please double check where Damian Lewis parked tonight. #justincase #GoldenGlobes #Homeland"
+      },
+      "best television series - comedy or musical": {
+        "label": "positive",
+        "example": "Blanket, Coffee, #GoldenGlobes, Tina Fey, Amy Poehler, #GIRLS premiere! This is the most perfect Sunday night!"
+      },
+      "best mini-series or motion picture made for television": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best performance by an actor in a television series - drama": {
+        "label": "positive",
+        "example": "RT @eastwoodmcfly: Somebody please double check where Damian Lewis parked tonight. #justincase #GoldenGlobes #Homeland"
+      },
+      "best performance by an actress in a television series - drama": {
+        "label": "positive",
+        "example": "Best dressed: Jessica Chastain, Jennifer Lawrence, Claire Danes, &amp; @azizansari in Kevin Dior. #goldenglobes"
+      },
+      "best performance by an actor in a television series - comedy or musical": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best performance by an actress in a television series - comedy or musical": {
+        "label": "neutral",
+        "example": "RT @Hollywood_com: Lena Dunham is WEARING clothes! #goldenglobes"
+      },
+      "best performance by an actor in a mini-series or motion picture made for television": {
+        "label": "positive",
+        "example": "RT @EliteTravelKara: Let's hope for a kevin costner win for @slate9 #goldenglobes"
+      },
+      "best performance by an actress in a mini-series or motion picture made for television": {
+        "label": "positive",
+        "example": "My favourite of the #GoldenGlobes #redcarpet is Julianne Moore in Tom Ford. Gorgeous!!"
+      },
+      "best performance by an actor in a supporting role in a series, mini-series or motion picture made for television": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best performance by an actress in a supporting role in a series, mini-series or motion picture made for television": {
+        "label": "neutral",
+        "example": ""
+      },
+      "cecil b. demille award": {
+        "label": "positive",
+        "example": "RT @ABC: Jodie Foster trending at #3 on Twitter right now, pre-Lifetime Achievement Award at #GoldenGlobes. Red carpet pic: http://t.co/RT0FM4Ia"
+      }
+    },
+    "presenters": {
+      "best motion picture - drama": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best motion picture - comedy or musical": {
+        "label": "positive",
+        "example": "Dustin Hoffman: RULES.  watch Straight Time! #goldenglobes"
+      },
+      "best performance by an actor in a motion picture - drama": {
+        "label": "positive",
+        "example": "@goldenglobes Saw George Clooney..:-) :-)"
+      },
+      "best performance by an actress in a motion picture - drama": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best performance by an actor in a motion picture - comedy or musical": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best performance by an actress in a motion picture - comedy or musical": {
+        "label": "positive",
+        "example": "Why did I just flip out? Because one of the best people in the world showed up on the tv..Kristen Wiig #goldenglobes !"
+      },
+      "best performance by an actor in a supporting role in a motion picture": {
+        "label": "neutral",
+        "example": "RT @Rah_Demon: Kate Hudson y Sofia Vergara, impresionantes!! Guap\u00edsimas cada una en su estilo y s\u00faper elegantes. #redcarpet #GoldenGlobes"
+      },
+      "best performance by an actress in a supporting role in a motion picture": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best director - motion picture": {
+        "label": "positive",
+        "example": "She still looks gorgeous. RT @_SoloDovePR: look at Halle Berry  #goldenglobes http://t.co/Wfcjerb9"
+      },
+      "best screenplay - motion picture": {
+        "label": "neutral",
+        "example": "RT @courtjustice: Robert Pattinson in @Gucci Made to Order Signoria tuxedo. MTC @TheFashionCourt http://t.co/CefjRU0R @GoldenGlobes http://t.co/kA0PUx4E"
+      },
+      "best original score - motion picture": {
+        "label": "neutral",
+        "example": "Jennifer Lopez's lace dress? Thoughts? #GoldenGlobes"
+      },
+      "best original song - motion picture": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best animated feature film": {
+        "label": "positive",
+        "example": "I want to listen to a long conversation between Adele and Sacha Baron Cohen. #goldenglobes #redcarpet"
+      },
+      "best foreign language film": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best television series - drama": {
+        "label": "positive",
+        "example": "I'm literally crying because of the perfection that is Lea Michele! Screaming, she looks perfect! #ERedCarpet #GoldenGlobes"
+      },
+      "best television series - comedy or musical": {
+        "label": "neutral",
+        "example": "RT @Hollywood_com: Lena Dunham is WEARING clothes! #goldenglobes"
+      },
+      "best mini-series or motion picture made for television": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best performance by an actor in a television series - drama": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best performance by an actress in a television series - drama": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best performance by an actor in a television series - comedy or musical": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best performance by an actress in a television series - comedy or musical": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best performance by an actor in a mini-series or motion picture made for television": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best performance by an actress in a mini-series or motion picture made for television": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best performance by an actor in a supporting role in a series, mini-series or motion picture made for television": {
+        "label": "neutral",
+        "example": ""
+      },
+      "best performance by an actress in a supporting role in a series, mini-series or motion picture made for television": {
+        "label": "neutral",
+        "example": ""
+      },
+      "cecil b. demille award": {
+        "label": "neutral",
+        "example": "Vayamos a lo importante. Robert Downey Jr va a estar en los #GoldenGlobes, \u00bfno?"
+      }
+    }
+  }
+}

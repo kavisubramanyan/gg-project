@@ -6,3 +6,4 @@ unidecode
 inflection
 langdetect
 Levenshtein
+IMDbPY
