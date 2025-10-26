@@ -1,4 +1,7 @@
 '''Version 0.5'''
+import json
+import os
+from new_extraction import aggregate_results
 
 # Year of the Golden Globes ceremony being analyzed
 YEAR = "2013"
@@ -7,14 +10,58 @@ YEAR = "2013"
 # This list is used by get_nominees(), get_winner(), and get_presenters() functions
 # as the keys for their returned dictionaries
 # Students should populate this list with the actual award categories for their year, to avoid cascading errors on outputs that depend on correctly extracting award names (e.g., nominees, presenters, winner)
-AWARD_NAMES = [
-    "best motion picture - drama",
-    "best motion picture - comedy or musical",
-    "best performance by an actor in a motion picture - drama",
-    # Add or modify categories as needed for your year
-    "your custom award category",
-    # ... etc
-]
+AWARD_NAMES = ['cecil b. demille award',
+                   'best motion picture drama',
+                   'best performance by an actress in a motion picture - drama',
+                   'best performance by an actor in a motion picture - drama',
+                   'best motion picture - comedy or musical',
+                   'best performance by an actress in a motion picture - comedy or musical',
+                   'best performance by an actor in a motion picture - comedy or musical',
+                   'best animated feature film',
+                   'best foreign language film',
+                   'best performance by an actress in a supporting role in a motion picture',
+                   'best performance by an actor in a supporting role in a motion picture',
+                   'best director - motion picture',
+                   'best screenplay - motion picture',
+                   'best original score - motion picture',
+                   'best original song - motion picture',
+                   'best television series - drama',
+                   'best performance by an actress in a television series - drama',
+                   'best performance by an actor in a television series - drama',
+                   'best television series - comedy or musical',
+                   'best performance by an actress in a television series - comedy or musical',
+                   'best performance by an actor in a television series - comedy or musical',
+                   'best mini-series or motion picture made for television',
+                   'best performance by an actress in a mini-series or motion picture made for television',
+                   'best performance by an actor in a mini-series or motion picture made for television',
+                   'best performance by an actress in a supporting role in a series, mini-series or motion picture made for television',
+                   'best performance by an actor in a supporting role in a series, mini-series or motion picture made for television']
+
+_cached_results = None
+def pre_ceremony():
+    '''Pre-processes and loads data for the Golden Globes analysis.
+    
+    This function should be called before any other functions to:
+    - Load and process the tweet data from gg2013.json
+    - Download required models (e.g., spaCy models)
+    - Perform any initial data cleaning or preprocessing
+    - Store processed data in files or database for later use
+    
+    This is the first function the TA will run when grading.
+    
+    Note:
+        - Do NOT change the name of this function or what it returns
+        - This function should handle all one-time setup tasks
+        - Print progress messages to help with debugging
+    '''
+    # Your code here
+    global _cached_results
+
+    with open("gg2013.json", "r", encoding="utf-8") as f:
+            tweets = json.load(f)
+    _cached_results = aggregate_results(tweets)
+    
+    return _cached_results
 
 def get_hosts(year):
     '''Returns the host(s) of the Golden Globes ceremony for the given year.
@@ -31,7 +78,8 @@ def get_hosts(year):
         - The function should return a list even if there's only one host
     '''
     # Your code here
-    return hosts
+    results = pre_ceremony()
+    return results.get("hosts", [])
 
 def get_awards(year):
     '''Returns the list of award categories for the Golden Globes ceremony.
@@ -49,8 +97,7 @@ def get_awards(year):
         - Award names should be extracted from tweets, not hardcoded
         - The only hardcoded part allowed is the word "Best"
     '''
-    # Your code here
-    return awards
+    return pre_ceremony().get("awards", [])
 
 def get_nominees(year):
     '''Returns the nominees for each award category.
@@ -84,7 +131,7 @@ def get_nominees(year):
         - Each value should be a list of strings, even if there's only one nominee
     '''
     # Your code here
-    return nominees
+    return pre_ceremony().get("nominees", {})
 
 def get_winner(year):
     '''Returns the winner for each award category.
@@ -107,7 +154,7 @@ def get_winner(year):
         - Each value should be a single string (the winner's name)
     '''
     # Your code here
-    return winners
+    return pre_ceremony().get("winners", {})
 
 def get_presenters(year):
     '''Returns the presenters for each award category.
@@ -130,27 +177,9 @@ def get_presenters(year):
         - Each value should be a list of strings, even if there's only one presenter
     '''
     # Your code here
-    return presenters
+    return pre_ceremony().get("presenters", {})
 
-def pre_ceremony():
-    '''Pre-processes and loads data for the Golden Globes analysis.
-    
-    This function should be called before any other functions to:
-    - Load and process the tweet data from gg2013.json
-    - Download required models (e.g., spaCy models)
-    - Perform any initial data cleaning or preprocessing
-    - Store processed data in files or database for later use
-    
-    This is the first function the TA will run when grading.
-    
-    Note:
-        - Do NOT change the name of this function or what it returns
-        - This function should handle all one-time setup tasks
-        - Print progress messages to help with debugging
-    '''
-    # Your code here
-    print("Pre-ceremony processing complete.")
-    return
+
 
 def main():
     '''Main function that orchestrates the Golden Globes analysis.
@@ -172,8 +201,10 @@ def main():
         - This function should coordinate all the analysis steps
         - Make sure to handle errors gracefully
     '''
-    # Your code here
-    return
+    results = pre_ceremony()
+    print(json.dumps(results, indent=2, ensure_ascii=False))
+
+    
 
 if __name__ == '__main__':
     main()

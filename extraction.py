@@ -9,6 +9,11 @@ DetectorFactory.seed = 0
 import datetime
 # detect_langs detects the most probable langiages and prob.
 
+
+# OLD EXTRACTION
+
+
+
 nlp = spacy.load("en_core_web_sm")
 
 ##### get the data 
@@ -122,7 +127,7 @@ for tweet in tweets:
 
 ##### now we can use nlp for specific functions
 def extract_people(tweet):
-    # # ensure in english
+    # # # ensure in english - moved from cleaning tweet 
     try:
         if detect(tweet) != "en":
             return []
@@ -215,11 +220,13 @@ class Tweet:
         self.tweet_id = tweet_id
         self.timestamp = timestamp
 
+        self.hashtags = re.findall(r"#(\w+)", tweets)
+
         # extracted info
         self.people = extract_people(cleaned_tweet)
         self.awards = extract_award_names(cleaned_tweet)
         self.buzzwords = extract_buzzwords(cleaned_tweet)
-        self.hashtags = re.findall(r"#(\w+)", tweets)
+        
 
 tweet_objects = []
 for i in range(len(tweets)):
